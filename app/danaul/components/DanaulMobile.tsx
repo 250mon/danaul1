@@ -4,7 +4,12 @@ import { sections, navigationButtons } from "../data";
 
 export default function DanaulMobile() {
   return (
-    <div className="block sm:hidden relative w-full">
+    <div
+      className="block sm:hidden relative w-full"
+      style={{
+        backgroundImage: "url('backgrounds/stacked-waves-haikei-4.svg')",
+      }}
+    >
       {sections.map((section) => (
         <div key={section.bg}>
           {/* Background Image Section */}
@@ -13,25 +18,24 @@ export default function DanaulMobile() {
             style={{
               backgroundImage: `url('${section.bg}')`,
             }}
-          >
-          </section>
+          ></section>
 
           {/* Content Section */}
           <section
             id={section.id}
-            className="relative w-full min-h-[60vh] flex items-center justify-center bg-black"
+            className="relative w-full min-h-[60vh] flex items-center justify-center"
           >
             <div className="relative z-10 flex flex-col items-center justify-center text-center text-white max-w-5xl mx-auto px-4 py-8">
               {/* Subtitle */}
               <p className="text-sm mb-4 font-light opacity-90 tracking-[0.1em]">
                 {section.subtitle}
               </p>
-              
+
               {/* Main Title */}
               <h1 className="mt-2 text-2xl mb-6 drop-shadow-2xl leading-tight tracking-[0.1em]">
                 {section.title}
               </h1>
-              
+
               {/* Hero Section - Navigation Buttons */}
               {section.isHero ? (
                 <div className="flex flex-wrap justify-around gap-1 mt-4">
@@ -66,4 +70,4 @@ export default function DanaulMobile() {
       ))}
     </div>
   );
-} 
+}

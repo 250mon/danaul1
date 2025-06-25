@@ -9,7 +9,7 @@ export default function ContactDesktop() {
       {/* Background with overlay */}
       <div 
         className="fixed inset-0 bg-center bg-no-repeat bg-cover md:bg-fixed"
-        style={{ backgroundImage: "url('/danaul/hero_bg.jpg')" }}
+        style={{ backgroundImage: "url('/danaul/danaul_ext_view.jpg')" }}
       />
       <div className="fixed inset-0 bg-black/60" />
       
