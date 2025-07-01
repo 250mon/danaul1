@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useAdmin } from './AdminContext';
 
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD; // Change this to a secure password
+// Password is now checked server-side via API route
 
 export default function AdminPanel() {
   const { isAdmin, setIsAdmin, popupContents, updatePopupContent, resetToDefaults } = useAdmin();
@@ -59,17 +59,36 @@ export default function AdminPanel() {
 
 
 
-  const handleLogin = () => {
-    if (password === ADMIN_PASSWORD) {
-      setIsAdmin(true);
-      setPassword('');
-      setShowPanel(true);
-    } else {
-      alert('잘못된 비밀번호입니다.');
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Store session token in localStorage
+        localStorage.setItem('adminToken', data.token);
+        setIsAdmin(true);
+        setPassword('');
+        setShowPanel(true);
+      } else {
+        alert('잘못된 비밀번호입니다.');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('로그인 중 오류가 발생했습니다.');
     }
   };
 
   const handleLogout = () => {
+    // Clear admin session
+    localStorage.removeItem('adminToken');
     setIsAdmin(false);
     setShowPanel(false);
   };

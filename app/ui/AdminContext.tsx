@@ -53,9 +53,11 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   // Load from localStorage on mount
   useEffect(() => {
     const savedAdmin = localStorage.getItem('isAdmin');
+    const adminToken = localStorage.getItem('adminToken');
     const savedContents = localStorage.getItem('popupContents');
     
-    if (savedAdmin === 'true') {
+    // Check if user has valid admin session
+    if (savedAdmin === 'true' && adminToken) {
       setIsAdmin(true);
     }
     
