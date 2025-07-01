@@ -50,25 +50,31 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [popupContents, setPopupContents] = useState<Record<string, PopupContent>>(defaultPopupContents);
 
-  // Load from localStorage on mount
+  // Fetch popup contents from server
+  const fetchPopupContents = async () => {
+    try {
+      const response = await fetch('/api/admin/popups');
+      const data = await response.json();
+      if (data.success) {
+        setPopupContents(data.contents);
+      }
+    } catch (error) {
+      console.error('Failed to fetch popup contents:', error);
+    }
+  };
+
+  // Load admin state and fetch popup contents on mount
   useEffect(() => {
     const savedAdmin = localStorage.getItem('isAdmin');
     const adminToken = localStorage.getItem('adminToken');
-    const savedContents = localStorage.getItem('popupContents');
     
     // Check if user has valid admin session
     if (savedAdmin === 'true' && adminToken) {
       setIsAdmin(true);
     }
     
-    if (savedContents) {
-      try {
-        const parsed = JSON.parse(savedContents);
-        setPopupContents(parsed);
-      } catch (error) {
-        console.error('Failed to parse saved popup contents:', error);
-      }
-    }
+    // Always fetch popup contents from server
+    fetchPopupContents();
   }, []);
 
   // Save to localStorage when admin state changes
@@ -76,21 +82,56 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('isAdmin', isAdmin.toString());
   }, [isAdmin]);
 
-  // Save to localStorage when popup contents change
-  useEffect(() => {
-    localStorage.setItem('popupContents', JSON.stringify(popupContents));
-  }, [popupContents]);
+  const updatePopupContent = async (id: string, updates: Partial<PopupContent>) => {
+    // Update local state immediately for responsive UI
+    const newContents = {
+      ...popupContents,
+      [id]: { ...popupContents[id], ...updates }
+    };
+    setPopupContents(newContents);
 
-  const updatePopupContent = (id: string, updates: Partial<PopupContent>) => {
-    setPopupContents(prev => ({
-      ...prev,
-      [id]: { ...prev[id], ...updates }
-    }));
+    // Save to server if admin is logged in
+    if (isAdmin) {
+      try {
+        const adminToken = localStorage.getItem('adminToken');
+        const response = await fetch('/api/admin/popups', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${adminToken}`
+          },
+          body: JSON.stringify({ contents: newContents }),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to save popup contents to server');
+          // Optionally revert local changes or show error message
+        }
+      } catch (error) {
+        console.error('Error saving popup contents:', error);
+      }
+    }
   };
 
-  const resetToDefaults = () => {
-    setPopupContents(defaultPopupContents);
-    localStorage.removeItem('popupContents');
+  const resetToDefaults = async () => {
+    if (isAdmin) {
+      try {
+        const adminToken = localStorage.getItem('adminToken');
+        const response = await fetch('/api/admin/popups', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${adminToken}`
+          }
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          setPopupContents(data.contents);
+        }
+      } catch (error) {
+        console.error('Error resetting popup contents:', error);
+      }
+    }
   };
 
   return (
