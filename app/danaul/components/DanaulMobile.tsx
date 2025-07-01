@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { sections, navigationButtons } from "../data";
+import { sections, navigationButtons } from "@/app/danaul/data";
 
 export default function DanaulMobile() {
   return (
@@ -22,7 +22,7 @@ export default function DanaulMobile() {
 
           {/* Content Section */}
           <section
-            id={section.id}
+            id={section.id ? `mobile-${section.id}` : "mobile-hero"}
             className="relative w-full min-h-[60vh] flex items-center justify-center"
           >
             <div className="relative z-10 flex flex-col items-center justify-center text-center text-white max-w-5xl mx-auto px-4 py-8">
@@ -42,7 +42,7 @@ export default function DanaulMobile() {
                   {navigationButtons.map((button) => (
                     <Link
                       key={button.name}
-                      href={`#${button.targetId}`}
+                      href={`#mobile-${button.targetId}`}
                       className="flex flex-row items-center gap-1 px-2 py-1.5 mb-12 rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer"
                     >
                       <Image

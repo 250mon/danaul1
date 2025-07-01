@@ -53,7 +53,7 @@ export default function Navigation() {
                 href="/contact"
                 className="block px-4 py-2 text-white hover:bg-white/30 transition-colors"
               >
-                진료시간 및 오시는 길
+                오시는 길 및 진료시간
               </Link>
             </div>
           )}
