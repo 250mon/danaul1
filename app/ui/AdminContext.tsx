@@ -94,6 +94,13 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     if (isAdmin) {
       try {
         const adminToken = localStorage.getItem('adminToken');
+        
+        if (!adminToken) {
+          console.error('No admin token found');
+          alert('인증 토큰이 없습니다. 다시 로그인해주세요.');
+          return;
+        }
+        
         const response = await fetch('/api/admin/popups', {
           method: 'PUT',
           headers: {
@@ -103,12 +110,22 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
           body: JSON.stringify({ contents: newContents }),
         });
 
+        const responseData = await response.json();
+        
         if (!response.ok) {
-          console.error('Failed to save popup contents to server');
-          // Optionally revert local changes or show error message
+          console.error('Server response error:', response.status, responseData);
+          alert(`서버 저장 실패: ${responseData.error || '알 수 없는 오류'}`);
+          return;
+        }
+
+        if (!responseData.success) {
+          console.error('Save operation failed:', responseData.error);
+          alert(`저장 실패: ${responseData.error}`);
+          return;
         }
       } catch (error) {
         console.error('Error saving popup contents:', error);
+        alert(`저장 중 오류 발생: ${error instanceof Error ? error.message : '알 수 없는 오류'}`);
       }
     }
   };

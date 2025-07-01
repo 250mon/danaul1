@@ -66,22 +66,33 @@ async function writePopupContents(contents: Record<string, PopupContent>) {
   try {
     await ensureDataDir();
     await writeFile(POPUP_FILE, JSON.stringify(contents, null, 2));
-  } catch (error) {
-    console.error('Failed to write popup contents:', error);
-    throw error;
+  } catch (err) {
+    console.error('Failed to write popup contents:', err);
+    throw err;
   }
 }
 
 // Verify admin token (simple check - in production use proper JWT validation)
 function verifyAdminToken(request: NextRequest): boolean {
   const authHeader = request.headers.get('authorization');
+  
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return false;
   }
   
   const token = authHeader.substring(7);
-  // Simple token validation - in production, use proper JWT verification
-  return token.startsWith('admin_');
+  
+  try {
+    // Decode base64 token
+    const decodedToken = Buffer.from(token, 'base64').toString('utf-8');
+    
+    // Simple token validation - in production, use proper JWT verification
+    const isValid = decodedToken.startsWith('admin_');
+    
+    return isValid;
+  } catch {
+    return false;
+  }
 }
 
 // GET: Fetch popup contents
@@ -104,26 +115,28 @@ export async function PUT(request: NextRequest) {
     if (!verifyAdminToken(request)) {
       return NextResponse.json({ 
         success: false, 
-        error: 'Unauthorized' 
+        error: 'Unauthorized - invalid or missing admin token' 
       }, { status: 401 });
     }
 
-    const { contents } = await request.json();
+    const requestBody = await request.json();
+    const { contents } = requestBody;
     
     if (!contents) {
       return NextResponse.json({ 
         success: false, 
-        error: 'Invalid request body' 
+        error: 'Invalid request body - contents field is required' 
       }, { status: 400 });
     }
 
     await writePopupContents(contents);
     
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (err) {
+    console.error('Error in PUT /api/admin/popups:', err);
     return NextResponse.json({ 
       success: false, 
-      error: 'Failed to update popup contents' 
+      error: `Failed to update popup contents: ${err instanceof Error ? err.message : 'Unknown error'}` 
     }, { status: 500 });
   }
 }
