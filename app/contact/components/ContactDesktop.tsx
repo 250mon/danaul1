@@ -2,6 +2,7 @@
 
 import Map from "@/app/ui/map";
 import Link from "next/link";
+import { CLINIC_INFO } from "@/app/lib/clinic-info";
 
 export default function ContactDesktop() {
   return (
@@ -53,11 +54,11 @@ export default function ContactDesktop() {
               <div className="space-y-3 text-white/90">
                 <div className="flex justify-between">
                   <span>평일</span>
-                  <span>09:00 - 18:00</span>
+                  <span>{CLINIC_INFO.hours.weekday}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>토요일</span>
-                  <span>09:00 - 13:00</span>
+                  <span>{CLINIC_INFO.hours.saturday}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>점심시간</span>
@@ -66,7 +67,7 @@ export default function ContactDesktop() {
                 <div className="border-t border-white/20 pt-3">
                   <div className="flex justify-between text-blue-300">
                     <span>화요일 야간진료</span>
-                    <span>18:00 - 20:00</span>
+                    <span>{CLINIC_INFO.hours.tuesday_evening}</span>
                   </div>
                 </div>
                 <div className="border-t border-white/20 pt-3">
@@ -87,7 +88,7 @@ export default function ContactDesktop() {
               <div className="space-y-3 text-white/90">
                 <div className="flex justify-between">
                   <span>대표전화</span>
-                  <span className="font-medium">02-465-9898</span>
+                  <span className="font-medium">{CLINIC_INFO.phone}</span>
                 </div>
               </div>
             </div>

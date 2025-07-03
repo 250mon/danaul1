@@ -1,15 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-interface PopupContent {
-  id: string;
-  title: string;
-  content: string;
-  enabled: boolean;
-  buttonText?: string;
-  buttonAction?: string;
-}
+import { PopupContent, defaultPopupContents } from '@/app/lib/constants';
 
 interface AdminContextType {
   isAdmin: boolean;
@@ -17,38 +9,15 @@ interface AdminContextType {
   popupContents: Record<string, PopupContent>;
   updatePopupContent: (id: string, content: Partial<PopupContent>) => void;
   resetToDefaults: () => void;
+  isLoading: boolean;
 }
-
-const defaultPopupContents: Record<string, PopupContent> = {
-  notice: {
-    id: 'notice',
-    title: '공지사항',
-    content: 'x월 xx일(금)~x월 xx일(일) 휴진합니다.\n진료 예약은 전화로 문의해 주세요.',
-    enabled: false,
-    buttonText: '닫기'
-  },
-  promo: {
-    id: 'promo',
-    title: '특별 이벤트',
-    content: '...',
-    enabled: true,
-    buttonText: '예약하기',
-    buttonAction: 'contact'
-  },
-  contact: {
-    id: 'contact',
-    title: '예약 문의',
-    content: '전화: 02-465-9898\n평일: 09:00 - 18:00\n토요일: 09:00 - 13:00',
-    enabled: true,
-    buttonText: '확인'
-  }
-};
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 export function AdminProvider({ children }: { children: React.ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [popupContents, setPopupContents] = useState<Record<string, PopupContent>>(defaultPopupContents);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch popup contents from server
   const fetchPopupContents = async () => {
@@ -60,6 +29,8 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error('Failed to fetch popup contents:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -157,7 +128,8 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       setIsAdmin,
       popupContents,
       updatePopupContent,
-      resetToDefaults
+      resetToDefaults,
+      isLoading
     }}>
       {children}
     </AdminContext.Provider>

@@ -2,6 +2,7 @@
 
 import { useState, useId, useEffect, useCallback } from "react";
 import Script from "next/script";
+import { CLINIC_INFO } from "@/app/lib/clinic-info";
 
 interface MapProps {
   className?: string;
@@ -29,24 +30,23 @@ const Map = ({ className = "w-full h-full min-h-[500px]", style, containerClassN
   const initializeMap = useCallback(() => {
     try {
       if (typeof window !== 'undefined' && window.naver && window.naver.maps) {
-        const mapDiv = document.getElementById(mapId);
+                const mapDiv = document.getElementById(mapId);
         if (mapDiv) {
-          const loc_name = '다나을신경외과의원';
           // initialize map
           const map = new window.naver.maps.Map(mapId, {
-            center: new window.naver.maps.LatLng(37.5490604, 127.0708617),
+            center: new window.naver.maps.LatLng(CLINIC_INFO.coordinates.lat, CLINIC_INFO.coordinates.lng),
             zoom: 14,
-          });
+        });
           // add marker
           const marker = new window.naver.maps.Marker({
-            position: new window.naver.maps.LatLng(37.5490604, 127.0708617),
+            position: new window.naver.maps.LatLng(CLINIC_INFO.coordinates.lat, CLINIC_INFO.coordinates.lng),
             map: map,
-            title: loc_name,
+            title: CLINIC_INFO.name,
           });
           // add marker description
           const markerDescription = new window.naver.maps.InfoWindow({
             // add css style
-            content: `<div style="width: 100px; height: 20px; background-color: white; border-radius: 1px; padding: 2px; font-size: 12px; font-weight: bold; color: black; text-align: center; line-height: 20px;">${loc_name}</div>`,
+            content: `<div style="width: 100px; height: 20px; background-color: white; border-radius: 1px; padding: 2px; font-size: 12px; font-weight: bold; color: black; text-align: center; line-height: 20px;">${CLINIC_INFO.name}</div>`,
           });
           markerDescription.open(map, marker);
 
@@ -54,7 +54,7 @@ const Map = ({ className = "w-full h-full min-h-[500px]", style, containerClassN
           window.naver.maps.Event.addListener(marker, 'click', (e) => {  
             const overlay = e.overlay, // marker
             position = overlay.getPosition(),
-            url = 'http://map.naver.com/index.nhn?enc=utf8&level=2&lng='+ position.lng() +'&lat='+ position.lat() +'&pinTitle='+ loc_name +'&pinType=SITE';
+            url = 'http://map.naver.com/index.nhn?enc=utf8&level=2&lng='+ position.lng() +'&lat='+ position.lat() +'&pinTitle='+ CLINIC_INFO.name +'&pinType=SITE';
     
             window.open(url);
           });

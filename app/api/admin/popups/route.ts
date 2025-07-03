@@ -1,74 +1,82 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, readFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
+import { createClient } from 'redis';
+import { PopupContent, defaultPopupContents } from '@/app/lib/constants';
 
-interface PopupContent {
-  id: string;
-  title: string;
-  content: string;
-  enabled: boolean;
-  buttonText?: string;
-  buttonAction?: string;
+const POPUP_CONTENTS_KEY = 'popup_contents';
+
+// Create Redis client
+function createRedisClient() {
+  const redis = createClient({
+    url: process.env.REDIS_URL || 'redis://localhost:6379',
+    // Add authentication if needed
+    ...(process.env.REDIS_PASSWORD && { password: process.env.REDIS_PASSWORD }),
+    socket: {
+      connectTimeout: 5000, // 5 second timeout
+    }
+  });
+  
+  return redis;
 }
 
-const defaultPopupContents: Record<string, PopupContent> = {
-  notice: {
-    id: 'notice',
-    title: '공지사항',
-    content: 'x월 xx일(금)~x월 xx일(일) 휴진합니다.\n진료 예약은 전화로 문의해 주세요.',
-    enabled: false,
-    buttonText: '닫기'
-  },
-  promo: {
-    id: 'promo',
-    title: '특별 이벤트',
-    content: '...',
-    enabled: true,
-    buttonText: '예약하기',
-    buttonAction: 'contact'
-  },
-  contact: {
-    id: 'contact',
-    title: '예약 문의',
-    content: '전화: 02-465-9898\n평일: 09:00 - 18:00\n화요일야간: 18:00 - 20:00\n토요일: 09:00 - 13:00',
-    enabled: true,
-    buttonText: '확인'
-  }
-};
-
-const DATA_DIR = path.join(process.cwd(), 'data');
-const POPUP_FILE = path.join(DATA_DIR, 'popups.json');
-
-// Ensure data directory exists
-async function ensureDataDir() {
-  if (!existsSync(DATA_DIR)) {
-    await mkdir(DATA_DIR, { recursive: true });
-  }
-}
-
-// Read popup contents from file
+// Read popup contents from Redis
 async function readPopupContents(): Promise<Record<string, PopupContent>> {
+  // Skip Redis if no URL is configured (development mode)
+  if (!process.env.REDIS_URL) {
+    console.log('No REDIS_URL configured, using default popup contents');
+    return defaultPopupContents;
+  }
+
+  let redis;
   try {
-    await ensureDataDir();
-    if (existsSync(POPUP_FILE)) {
-      const data = await readFile(POPUP_FILE, 'utf-8');
+    redis = createRedisClient();
+    await redis.connect();
+    
+    const data = await redis.get(POPUP_CONTENTS_KEY);
+    
+    if (data) {
       return JSON.parse(data);
     }
+    
     return defaultPopupContents;
-  } catch {
+  } catch (err) {
+    console.error('Error reading from Redis (falling back to defaults):', err);
     return defaultPopupContents;
+  } finally {
+    if (redis) {
+      try {
+        await redis.disconnect();
+      } catch (disconnectErr) {
+        console.error('Error disconnecting from Redis:', disconnectErr);
+      }
+    }
   }
 }
 
-// Write popup contents to file
+// Write popup contents to Redis
 async function writePopupContents(contents: Record<string, PopupContent>) {
+  // Skip Redis if no URL is configured (development mode)
+  if (!process.env.REDIS_URL) {
+    console.log('No REDIS_URL configured, skipping Redis write (development mode)');
+    return; // Don't throw error, just skip
+  }
+
+  let redis;
   try {
-    await ensureDataDir();
-    await writeFile(POPUP_FILE, JSON.stringify(contents, null, 2));
+    redis = createRedisClient();
+    await redis.connect();
+    
+    await redis.set(POPUP_CONTENTS_KEY, JSON.stringify(contents));
   } catch (err) {
-    console.error('Failed to write popup contents:', err);
+    console.error('Failed to write popup contents to Redis:', err);
     throw err;
+  } finally {
+    if (redis) {
+      try {
+        await redis.disconnect();
+      } catch (disconnectErr) {
+        console.error('Error disconnecting from Redis:', disconnectErr);
+      }
+    }
   }
 }
 

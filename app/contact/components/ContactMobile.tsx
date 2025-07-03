@@ -2,6 +2,7 @@
 
 import Map from "@/app/ui/map";
 import Link from "next/link";
+import { CLINIC_INFO } from "@/app/lib/clinic-info";
 
 export default function ContactMobile() {
   return (
@@ -49,23 +50,23 @@ export default function ContactMobile() {
               진료시간
             </h2>
             <div className="space-y-2 text-white/90 text-sm">
-              <div className="flex justify-between">
-                <span>평일</span>
-                <span>09:00 - 18:00</span>
-              </div>
-              <div className="flex justify-between">
-                <span>토요일</span>
-                <span>09:00 - 13:00</span>
-              </div>
+                              <div className="flex justify-between">
+                  <span>평일</span>
+                  <span>{CLINIC_INFO.hours.weekday}</span>
+                </div>
+                              <div className="flex justify-between">
+                  <span>토요일</span>
+                  <span>{CLINIC_INFO.hours.saturday}</span>
+                </div>
               <div className="flex justify-between">
                 <span>점심시간</span>
                 <span>13:00 - 14:00</span>
               </div>
               <div className="border-t border-white/20 pt-2">
-                <div className="flex justify-between text-blue-300">
-                  <span>화요일 야간진료</span>
-                  <span>18:00 - 20:00</span>
-                </div>
+                                  <div className="flex justify-between text-blue-300">
+                    <span>화요일 야간진료</span>
+                    <span>{CLINIC_INFO.hours.tuesday_evening}</span>
+                  </div>
               </div>
               <div className="border-t border-white/20 pt-2">
                 <div className="flex justify-between text-red-300">
@@ -83,10 +84,10 @@ export default function ContactMobile() {
               연락처
             </h2>
             <div className="space-y-2 text-white/90 text-sm">
-              <div className="flex justify-between">
-                <span>대표전화</span>
-                <span className="font-medium">02-465-9898</span>
-              </div>
+                              <div className="flex justify-between">
+                  <span>대표전화</span>
+                  <span className="font-medium">{CLINIC_INFO.phone}</span>
+                </div>
             </div>
           </div>
 

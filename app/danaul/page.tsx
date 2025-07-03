@@ -12,7 +12,7 @@ import DynamicModalContent from "@/app/ui/DynamicModalContent";
 
 export default function DanaulPage() {
   const { modals, openModal, closeModal } = useModals();
-  const { isAdmin, popupContents } = useAdmin();
+  const { isAdmin, popupContents, isLoading } = useAdmin();
   const [hasInitialLoad, setHasInitialLoad] = useState(false);
 
   const openContactModal = useCallback(() => {
@@ -48,7 +48,7 @@ export default function DanaulPage() {
 
   // Open enabled modals on initial page load only
   useEffect(() => {
-    if (!hasInitialLoad) {
+    if (!hasInitialLoad && !isLoading) {
       const timer = setTimeout(() => {
         if (popupContents.notice.enabled) {
           openNoticeModal();
@@ -61,7 +61,7 @@ export default function DanaulPage() {
 
       return () => clearTimeout(timer);
     }
-  }, [hasInitialLoad, popupContents.notice.enabled, popupContents.promo.enabled, openNoticeModal, openPromoModal]);
+  }, [hasInitialLoad, isLoading, popupContents.notice.enabled, popupContents.promo.enabled, openNoticeModal, openPromoModal]);
 
   // Close modals when they are disabled in admin panel
   useEffect(() => {
