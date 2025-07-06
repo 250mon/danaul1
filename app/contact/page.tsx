@@ -1,6 +1,5 @@
 import Navigation from "@/app/ui/navigation";
-import ContactMobile from "./components/ContactMobile";
-import ContactDesktop from "./components/ContactDesktop";
+import Contact from "./components/Contact";
 
 export default function ContactPage() {
   return (
@@ -8,11 +7,8 @@ export default function ContactPage() {
       {/* Navigation */}
       <Navigation />
       
-      {/* Mobile Component - shown only on small screens */}
-      <ContactMobile />
-      
-      {/* Desktop Component - shown only on medium+ screens */}
-      <ContactDesktop />
+      {/* Unified Contact Component - responsive for both mobile and desktop */}
+      <Contact />
     </div>
   );
 }

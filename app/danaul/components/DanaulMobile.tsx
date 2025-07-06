@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { sections, navigationButtons } from "@/app/danaul/data";
+import { sections, navigationButtons } from "@/app/lib/data";
 
 export default function DanaulMobile() {
   return (

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from 'redis';
-import { PopupContent, defaultPopupContents } from '@/app/lib/constants';
+import { PopupContent, defaultPopupContents } from '@/app/lib/data';
 
 const POPUP_CONTENTS_KEY = 'popup_contents';
 

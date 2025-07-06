@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { sections, navigationButtons } from "../data";
+import { sections, navigationButtons } from "@/app/lib/data";
 import Link from "next/link";
 
 export default function DanaulDesktop() {

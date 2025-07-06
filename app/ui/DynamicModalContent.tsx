@@ -15,12 +15,69 @@ export default function DynamicModalContent({ popupId, onClose, onAction }: Dyna
   if (!popup) return null;
 
   const formatContent = (content: string) => {
-    return content.split('\n').map((line, index) => (
-      <span key={index}>
-        {line}
-        {index < content.split('\n').length - 1 && <br />}
-      </span>
-    ));
+    return content.split('\n').map((line, index) => {
+      // Check if line contains a display text|URL format
+      const linkMatch = line.match(/^(.*?)([^|]+)\|(https?:\/\/[^\s]+)(.*)$/);
+      
+      if (linkMatch) {
+        const [, beforeText, displayText, url, afterText] = linkMatch;
+        return (
+          <span key={index}>
+            {beforeText}
+            <a
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 hover:text-blue-800 underline"
+            >
+              {displayText}
+            </a>
+            {afterText}
+            {index < content.split('\n').length - 1 && <br />}
+          </span>
+        );
+      }
+      
+      // Handle phone numbers and URLs
+      const phoneRegex = /(\d{2,3}-\d{3,4}-\d{4})/g;
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      const combinedRegex = /(\d{2,3}-\d{3,4}-\d{4}|https?:\/\/[^\s]+)/g;
+      
+      const parts = line.split(combinedRegex);
+      
+      return (
+        <span key={index}>
+          {parts.map((part, partIndex) => {
+            if (phoneRegex.test(part)) {
+              return (
+                <a
+                  key={partIndex}
+                  href={`tel:${part}`}
+                  className="text-blue-600 hover:text-blue-800 underline"
+                >
+                  {part}
+                </a>
+              );
+            }
+            if (urlRegex.test(part)) {
+              return (
+                <a
+                  key={partIndex}
+                  href={part}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline break-all"
+                >
+                  {part}
+                </a>
+              );
+            }
+            return part;
+          })}
+          {index < content.split('\n').length - 1 && <br />}
+        </span>
+      );
+    });
   };
 
   return (

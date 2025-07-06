@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { PopupContent, defaultPopupContents } from '@/app/lib/constants';
+import { PopupContent, defaultPopupContents } from '@/app/lib/data';
 
 interface AdminContextType {
   isAdmin: boolean;
