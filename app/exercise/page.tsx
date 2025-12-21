@@ -1,4 +1,4 @@
-import Navigation from "@/app/ui/navigation";
+import Header from "@/app/ui/Header";
 
 const CLIPS = {
   요추: [
@@ -49,7 +49,7 @@ export default function ExercisePage() {
 
       {/* Content */}
       <div className="relative z-10 w-full">
-        <Navigation />
+        <Header />
 
         <h1 className="text-3xl font-bold text-white mb-8 drop-shadow-lg text-center">
           다나을 운동 동영상 가이드

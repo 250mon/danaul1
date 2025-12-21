@@ -1,73 +1,56 @@
-import Image from "next/image";
+"use client";
+
+import { sections } from "@/app/lib/data";
+import Hero from "@/app/ui/Hero";
 import Link from "next/link";
-import { sections, navigationButtons } from "@/app/lib/data";
+
 
 export default function DanaulMobile() {
+  const heroSection = sections.find((s) => s.isHero);
+  const contentSections = sections.filter((s) => !s.isHero);
+
   return (
-    <div
-      className="block sm:hidden relative w-full"
-      style={{
-        backgroundImage: "url('backgrounds/stacked-waves-haikei-4.svg')",
-      }}
-    >
-      {sections.map((section) => (
-        <div key={section.bg}>
-          {/* Background Image Section */}
-          <section
-            className="relative w-full h-[40vh] bg-center bg-no-repeat bg-contain overflow-hidden"
-            style={{
-              backgroundImage: `url('${section.bg}')`,
-            }}
-          ></section>
+    <div className="block md:hidden relative w-full bg-slate-50">
+      {/* Hero Section */}
+      {heroSection && (
+        <Hero
+          backgroundImage={heroSection.bg}
+          title={heroSection.title}
+          subtitle={heroSection.subtitle}
+          description={heroSection.description}
+        />
+      )}
 
-          {/* Content Section */}
+      {/* Content Sections */}
+      <div className="flex flex-col gap-6 px-4 py-8 -mt-10 relative z-20">
+        {contentSections.map((section) => (
           <section
-            id={section.id ? `mobile-${section.id}` : "mobile-hero"}
-            className="relative w-full min-h-[60vh] flex items-center justify-center"
+            key={section.id}
+            id={`m-${section.id}`}
+            className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden"
           >
-            <div className="relative z-10 flex flex-col items-center justify-center text-center text-white max-w-5xl mx-auto px-4 py-8">
-              {/* Subtitle */}
-              <p className="text-sm mb-4 font-light opacity-90 tracking-[0.1em]">
+            <div 
+              className="h-40 bg-cover bg-center"
+              style={{ backgroundImage: `url('${section.bg}')` }}
+            />
+            <div className="p-6">
+              <span className="text-xs font-bold text-accent uppercase tracking-wider mb-2 block">
                 {section.subtitle}
+              </span>
+              <h3 className="text-2xl font-bold text-slate-800 mb-4">{section.title}</h3>
+              <div className="w-12 h-1 bg-gray-100 rounded-full mb-4" />
+              <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line">
+                {section.description}
               </p>
-
-              {/* Main Title */}
-              <h1 className="mt-2 text-2xl mb-6 drop-shadow-2xl leading-tight tracking-[0.1em]">
-                {section.title}
-              </h1>
-
-              {/* Hero Section - Navigation Buttons */}
-              {section.isHero ? (
-                <div className="flex flex-wrap justify-around gap-1 mt-4">
-                  {navigationButtons.map((button) => (
-                    <Link
-                      key={button.name}
-                      href={`#mobile-${button.targetId}`}
-                      className="flex flex-row items-center gap-1 px-2 py-1.5 mb-12 rounded-lg hover:bg-white/20 transition-all duration-300 hover:scale-105 cursor-pointer"
-                    >
-                      <Image
-                        src={button.icon}
-                        alt={`${button.name} 아이콘`}
-                        width={20}
-                        height={20}
-                        className="filter invert brightness-0 contrast-100"
-                      />
-                      <span className="text-base font-thin tracking-tight">
-                        {button.name}
-                      </span>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                /* Description */
-                <div className="mt-4 text-sm leading-[2] opacity-90 max-w-4xl whitespace-pre-line text-center px-2">
-                  {section.description}
-                </div>
-              )}
+              <div className="mt-6 pt-4 border-t border-slate-50">
+                 <Link href={section.link || "/contact"} className="text-primary font-semibold text-sm flex items-center gap-1">
+                   상담 예약하기 <span className="text-lg">›</span>
+                 </Link>
+              </div>
             </div>
           </section>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

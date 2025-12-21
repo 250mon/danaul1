@@ -1,4 +1,4 @@
-import Navigation from "./navigation";
+import Header from "./Header";
 
 interface BackgroundLayoutProps {
   children: React.ReactNode;
@@ -44,7 +44,7 @@ export default function BackgroundLayout({
       />
 
       {/* Navigation */}
-      <Navigation />
+      <Header />
 
       {/* Content */}
       <div className="relative z-10">

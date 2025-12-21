@@ -1,11 +1,11 @@
-import Navigation from "@/app/ui/navigation";
+import Header from "@/app/ui/Header";
 import Contact from "./components/Contact";
 
 export default function ContactPage() {
   return (
     <div className="relative w-full">
       {/* Navigation */}
-      <Navigation />
+      <Header />
       
       {/* Unified Contact Component - responsive for both mobile and desktop */}
       <Contact />

@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from 'redis';
 import { PopupContent, defaultPopupContents } from '@/app/lib/data';
+import fs from 'fs/promises';
+import path from 'path';
 
 const POPUP_CONTENTS_KEY = 'popup_contents';
+const STORAGE_FILE = path.join(process.cwd(), 'popups-config.json');
 
 // Create Redis client
 function createRedisClient() {
@@ -18,65 +21,57 @@ function createRedisClient() {
   return redis;
 }
 
-// Read popup contents from Redis
+// Read popup contents from Redis or local file
 async function readPopupContents(): Promise<Record<string, PopupContent>> {
-  // Skip Redis if no URL is configured (development mode)
-  if (!process.env.REDIS_URL) {
-    console.log('No REDIS_URL configured, using default popup contents');
-    return defaultPopupContents;
+  // Try Redis first if configured
+  if (process.env.REDIS_URL) {
+    let redis;
+    try {
+      redis = createRedisClient();
+      await redis.connect();
+      const data = await redis.get(POPUP_CONTENTS_KEY);
+      if (data) return JSON.parse(data);
+    } catch (err) {
+      console.error('Error reading from Redis:', err);
+    } finally {
+      if (redis) await redis.disconnect();
+    }
   }
 
-  let redis;
+  // Fallback to local file in development or if Redis fails
   try {
-    redis = createRedisClient();
-    await redis.connect();
-    
-    const data = await redis.get(POPUP_CONTENTS_KEY);
-    
-    if (data) {
-      return JSON.parse(data);
-    }
-    
+    const data = await fs.readFile(STORAGE_FILE, 'utf-8');
+    return JSON.parse(data);
+  } catch {
+    // If file doesn't exist, use defaults
     return defaultPopupContents;
-  } catch (err) {
-    console.error('Error reading from Redis (falling back to defaults):', err);
-    return defaultPopupContents;
-  } finally {
-    if (redis) {
-      try {
-        await redis.disconnect();
-      } catch (disconnectErr) {
-        console.error('Error disconnecting from Redis:', disconnectErr);
-      }
-    }
   }
 }
 
-// Write popup contents to Redis
+// Write popup contents to Redis or local file
 async function writePopupContents(contents: Record<string, PopupContent>) {
-  // Skip Redis if no URL is configured (development mode)
-  if (!process.env.REDIS_URL) {
-    console.log('No REDIS_URL configured, skipping Redis write (development mode)');
-    return; // Don't throw error, just skip
+  // Write to Redis if configured
+  if (process.env.REDIS_URL) {
+    let redis;
+    try {
+      redis = createRedisClient();
+      await redis.connect();
+      await redis.set(POPUP_CONTENTS_KEY, JSON.stringify(contents));
+      return;
+    } catch (err) {
+      console.error('Failed to write to Redis:', err);
+      // Fall through to file write as backup
+    } finally {
+      if (redis) await redis.disconnect();
+    }
   }
 
-  let redis;
+  // Always write to local file as backup/development storage
   try {
-    redis = createRedisClient();
-    await redis.connect();
-    
-    await redis.set(POPUP_CONTENTS_KEY, JSON.stringify(contents));
+    await fs.writeFile(STORAGE_FILE, JSON.stringify(contents, null, 2), 'utf-8');
   } catch (err) {
-    console.error('Failed to write popup contents to Redis:', err);
+    console.error('Failed to write to local storage file:', err);
     throw err;
-  } finally {
-    if (redis) {
-      try {
-        await redis.disconnect();
-      } catch (disconnectErr) {
-        console.error('Error disconnecting from Redis:', disconnectErr);
-      }
-    }
   }
 }
 

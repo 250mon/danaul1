@@ -19,10 +19,10 @@ export function PopupModalRenderer({ modals, closeModal }: PopupModalRendererPro
   return (
     <>
       {/* Backdrop */}
-      <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm" />
+      <div className="fixed inset-0 z-[500] bg-black/50 backdrop-blur-sm" />
       
       {/* Modal Container */}
-      <div className="fixed inset-0 z-[101] flex items-center justify-center gap-4 p-4 flex-col sm:flex-row">
+      <div className="fixed inset-0 z-[501] flex items-center justify-center gap-4 p-4 flex-col sm:flex-row">
         {Object.entries(modals).map(([id, content]) => (
           <div key={id} className="bg-white rounded-2xl shadow-2xl p-6 max-w-sm w-full relative">
             <button

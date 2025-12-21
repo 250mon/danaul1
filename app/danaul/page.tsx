@@ -1,9 +1,9 @@
 'use client';
 
-import Navigation from "@/app/ui/navigation";
+import Header from "@/app/ui/Header";
 import DanaulMobile from "@/app/danaul/components/DanaulMobile";
 import DanaulDesktop from "@/app/danaul/components/DanaulDesktop";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useModals } from "@/app/ui/useModals";
 import { PopupModalRenderer } from "@/app/ui/PopupModalManager";
 import { useAdmin } from "@/app/ui/AdminContext";
@@ -14,6 +14,7 @@ export default function DanaulPage() {
   const { modals, openModal, closeModal } = useModals();
   const { isAdmin, popupContents, isLoading } = useAdmin();
   const [hasInitialLoad, setHasInitialLoad] = useState(false);
+  const prevEnabled = useRef<Record<string, boolean>>({});
 
   const openContactModal = useCallback(() => {
     openModal('contact', (
@@ -46,39 +47,63 @@ export default function DanaulPage() {
     ));
   }, [openModal, closeModal, openContactModal]);
 
-  // Open enabled modals on initial page load only
+  // Handle popups: initial load and live admin changes
   useEffect(() => {
-    if (!hasInitialLoad && !isLoading) {
-      const timer = setTimeout(() => {
-        if (popupContents.notice.enabled) {
+    if (isLoading) return;
+
+    const timer = setTimeout(() => {
+      // 1. Check for Notice popup
+      const isNoticeEnabled = !!popupContents.notice?.enabled;
+      const wasNoticeEnabled = !!prevEnabled.current.notice;
+      
+      if (isNoticeEnabled) {
+        // Open if it's the first load OR if it was just turned on in admin
+        if (!hasInitialLoad || !wasNoticeEnabled) {
           openNoticeModal();
         }
-        if (popupContents.promo.enabled) {
-          openPromoModal();
-        }
-        setHasInitialLoad(true);
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, [hasInitialLoad, isLoading, popupContents.notice.enabled, popupContents.promo.enabled, openNoticeModal, openPromoModal]);
-
-  // Close modals when they are disabled in admin panel
-  useEffect(() => {
-    if (hasInitialLoad) {
-      if (!popupContents.notice.enabled && modals.notice) {
+      } else if (wasNoticeEnabled && !isNoticeEnabled) {
+        // Close if it was just turned off in admin
         closeModal('notice');
       }
-      if (!popupContents.promo.enabled && modals.promo) {
+
+      // 2. Check for Promo popup
+      const isPromoEnabled = !!popupContents.promo?.enabled;
+      const wasPromoEnabled = !!prevEnabled.current.promo;
+
+      if (isPromoEnabled) {
+        if (!hasInitialLoad || !wasPromoEnabled) {
+          openPromoModal();
+        }
+      } else if (wasPromoEnabled && !isPromoEnabled) {
         closeModal('promo');
       }
-    }
-  }, [popupContents.notice.enabled, popupContents.promo.enabled, modals, hasInitialLoad, closeModal]);
+
+      // Update refs and state
+      prevEnabled.current = {
+        notice: isNoticeEnabled,
+        promo: isPromoEnabled
+      };
+      
+      if (!hasInitialLoad) {
+        setHasInitialLoad(true);
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [
+    isLoading, 
+    popupContents.notice?.enabled, 
+    popupContents.promo?.enabled, 
+    openNoticeModal, 
+    openPromoModal,
+    closeModal,
+    hasInitialLoad
+  ]);
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full min-h-screen bg-slate-50">
       {/* Navigation */}
-      <Navigation />
+      <Header />
       
       {/* Render all active modals side by side */}
       <PopupModalRenderer modals={modals} closeModal={closeModal} />

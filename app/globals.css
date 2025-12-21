@@ -1,27 +1,57 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Medical Theme Palette */
+  --primary-blue: #004d99; /* Deep reassuring blue */
+  --secondary-blue: #ebf5ff; /* Light air/sky blue */
+  --accent-blue: #008ae6; /* Bright active blue */
+  --text-primary: #1e293b; /* Slate 800 */
+  --text-secondary: #475569; /* Slate 600 */
+  --surface-white: #ffffff;
+  --surface-offwhite: #f8fafc; /* Slate 50 */
+  
+  --background: var(--surface-white);
+  --foreground: var(--text-primary);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary-blue);
+  --color-secondary: var(--secondary-blue);
+  --color-accent: var(--accent-blue);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-surface: var(--surface-white);
+  --color-surface-alt: var(--surface-offwhite);
+  
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-pretendard: var(--font-pretendard);
+  
+  --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+  --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* Keep light theme as default for medical site for now, or define dark variables here */
+    /* Often medical sites stay light for cleanliness, but here is a mapping just in case */
+    --background: #0f172a;
+    --foreground: #f1f5f9;
+        
+    --primary-blue: #3b82f6;
+    --secondary-blue: #1e293b;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --surface-white: #1e293b;
+    --surface-offwhite: #0f172a;
   }
 }
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 100px; /* Offset for fixed header */
 }
 
 body {
@@ -29,4 +59,19 @@ body {
   color: var(--foreground);
   font-family: var(--font-pretendard), var(--font-geist-sans), Arial, Helvetica, sans-serif;
   overflow-x: hidden;
+}
+
+/* Utility classes for glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }

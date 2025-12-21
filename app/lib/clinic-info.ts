@@ -8,7 +8,9 @@ export const CLINIC_INFO = {
   hours: {
     weekday: '09:00 - 18:00',
     tuesday_evening: '18:00 - 20:00',
-    saturday: '09:00 - 13:00'
+    saturday: '09:00 - 13:00',
+    lunch: '13:00 - 14:00',
+    closed: '휴진'
   },
   address: {
     // Add address when available

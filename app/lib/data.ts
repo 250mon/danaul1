@@ -9,6 +9,9 @@ export interface PopupContent {
   buttonAction?: string;
 }
 
+
+export const NAVER_BOOKING_URL = 'https://m.booking.naver.com/booking/13/bizes/735484/items/4535653?area=bmp&lang=ko&map-search=1&service-target=map-pc&startDate=2025-07-05&theme=place';
+
 export const defaultPopupContents: Record<string, PopupContent> = {
   notice: {
     id: 'notice',
@@ -28,7 +31,7 @@ export const defaultPopupContents: Record<string, PopupContent> = {
   contact: {
     id: 'contact',
     title: '예약 문의',
-    content: `전화: ${CLINIC_INFO.phone}\n평일: ${CLINIC_INFO.hours.weekday}\n화요일야간: ${CLINIC_INFO.hours.tuesday_evening}\n토요일: ${CLINIC_INFO.hours.saturday}\n\n네이버 예약하기|https://m.booking.naver.com/booking/13/bizes/735484/items/4535653?area=bmp&lang=ko&map-search=1&service-target=map-pc&startDate=2025-07-05&theme=place`,
+    content: `전화: ${CLINIC_INFO.phone}\n평일: ${CLINIC_INFO.hours.weekday}\n화요일야간: ${CLINIC_INFO.hours.tuesday_evening}\n토요일: ${CLINIC_INFO.hours.saturday}\n\n네이버 예약하기|${NAVER_BOOKING_URL}`,
     enabled: true,
     buttonText: '확인'
   }
@@ -46,10 +49,11 @@ export const sections = [
     bg: "/danaul/spine_bg.jpg",
     subtitle: "다년간의 척추 수술 및 비수술 치료",
     title: "척추 클리닉",
-    description: `10년 이상의 척추협착, 목디스크, 허리디스크 등의 수술·시술 경험 풍부한 척추 전문의가 직접 진료하고 치료합니다.
+    description: `10년 이상의 척추협착, 목디스크, 허리디스크 등의 수술·시술 경험이 풍부한 척추 전문의가 직접 진료하고 치료합니다.
 신경차단술·물리치료·도수치료·체외충격파 등 비수술 치료 우선 원칙을 지향합니다.
 질환의 근본 원인을 찾고, 잘못된 생활습관 교정과 환자 개개인에 맞는 운동치료를 제공합니다.`,
     id: "spine",
+    link: "/spine",
   },
   {
     bg: "/danaul/knee_bg.jpg",
@@ -59,6 +63,7 @@ export const sections = [
 근거 기반의 의학적 치료를 지향하며 최신 장비를 바탕으로 효과적인 비수술적 치료를 시행합니다.
 초음파 유도하 주사치료 및 체외충격파 등 비수술 치료를 제공합니다.`,
     id: "joint",
+    link: "/joint",
   },
   {
     bg: "/danaul/pain_bg.jpg",
@@ -67,6 +72,7 @@ export const sections = [
     description: `두통, 목·허리통증, 대상포진 신경통 등 신경성 통증 질환을 신경외과 전문의가 직접 진료 합니다.
 통증이 오래 지속되면 단순한 염증이 아닌 신경과 뇌 문제로 발전하므로, 정확한 감별과 조기 개입이 중요합니다.`,
     id: "pain",
+    link: "/pain",
   },
   {
     bg: "/danaul/suture.jpg",
@@ -76,6 +82,7 @@ export const sections = [
 골절, 내부 출혈, 조직 파열 등을 초음파·X-ray 등 영상장비를 활용해 실시간 진단합니다.
 도수치료, 체외충격파, 주사치료, 물리치료, 약물요법 등 외상 후 조직 회복을 돕는 비수술 중심의 치료를 제공합니다.`,
     id: "trauma",
+    link: "/trauma",
   },
   {
     bg: "/danaul/jogging_bg.jpg",
@@ -85,13 +92,14 @@ export const sections = [
 허리통증, 관절 질환, 당뇨, 고혈압, 수면무호흡까지 다양한 질환을 유발하는 대사 증후군의 시작점입니다.
 척추·관절 통증의 주요 원인인 체중 과다, 감량 치료만으로도 통증 개선 효과가 입증되어 있습니다.`,
     id: "obesity",
+    link: "/obesity",
   },
 ];
 
 export const navigationButtons = [
-  { name: "척추", icon: "/danaul/spine icon.svg", targetId: "spine" },
-  { name: "관절", icon: "/danaul/joint icon.svg", targetId: "joint" },
-  { name: "통증", icon: "/danaul/metabolism icon.svg", targetId: "pain" },
-  { name: "외상", icon: "/danaul/injury icon.svg", targetId: "trauma" },
-  { name: "비만", icon: "/danaul/monitor weight icon.svg", targetId: "obesity" },
+  { name: "척추", icon: "/danaul/spine icon.svg", targetId: "/spine" },
+  { name: "관절", icon: "/danaul/joint icon.svg", targetId: "/joint" },
+  { name: "통증", icon: "/danaul/metabolism icon.svg", targetId: "/pain" },
+  { name: "외상", icon: "/danaul/injury icon.svg", targetId: "/trauma" },
+  { name: "비만", icon: "/danaul/monitor weight icon.svg", targetId: "/obesity" },
 ]; 

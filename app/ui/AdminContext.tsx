@@ -25,7 +25,11 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch('/api/admin/popups');
       const data = await response.json();
       if (data.success) {
-        setPopupContents(data.contents);
+        // Merge with defaults to ensure all required keys exist
+        setPopupContents({
+          ...defaultPopupContents,
+          ...data.contents
+        });
       }
     } catch (error) {
       console.error('Failed to fetch popup contents:', error);
