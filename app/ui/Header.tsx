@@ -33,12 +33,12 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-md shadow-sm h-16 md:h-20"
+        isScrolled || isMobileMenuOpen
+          ? "bg-white shadow-sm h-16 md:h-20"
           : "bg-white/20 backdrop-sm h-20 md:h-24"
       }`}
     >
-      <div className="container mx-auto px-4 h-full flex items-center justify-between">
+      <div className="container mx-auto px-4 h-full flex items-center justify-between relative z-50">
         {/* Logo */}
         <Link href="/danaul" className="flex items-center gap-2">
           <Image
@@ -102,9 +102,17 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Backdrop */}
       <div
-        className={`fixed inset-0 z-40 bg-white transform transition-transform duration-300 lg:hidden pt-24 px-6 ${
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 lg:hidden ${
+          isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* Mobile Menu Drawer */}
+      <div
+        className={`fixed top-0 right-0 bottom-0 w-[280px] bg-white transition-transform duration-300 lg:hidden pt-24 px-6 shadow-2xl ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -114,7 +122,7 @@ export default function Header() {
               key={link.name}
               href={link.href}
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-lg font-medium text-gray-800 border-b border-gray-100 pb-4"
+              className="text-lg font-medium text-gray-800 border-b border-gray-100 pb-4 hover:text-primary transition-colors"
             >
               {link.name}
             </Link>

@@ -47,12 +47,6 @@ export default function Hero({ backgroundImage, subtitle, description }: HeroPro
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </Link>
-            <Link
-              href="#spine"
-              className="px-8 py-4 bg-white text-primary border-2 border-primary/20 rounded-xl font-bold text-lg shadow-sm hover:bg-blue-50 hover:border-primary hover:text-primary transition-all duration-300"
-            >
-              진료과목 보기
-            </Link>
           </div>
         </div>
 
