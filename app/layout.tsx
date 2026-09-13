@@ -163,6 +163,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      <head>
+        {/* Every page needs this one; without the hint it is not discovered
+            until the stylesheet parses. The dynamic-subset slices behind it
+            stay unpreloaded — they are only fetched for stray characters. */}
+        <link
+          rel="preload"
+          href="/fonts/pretendard/PretendardVariable.site.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="antialiased">
         {/* Google tag (gtag.js) - loaded on every route via the root layout */}
         {analyticsEnabled && (

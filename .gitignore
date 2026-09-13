@@ -43,3 +43,6 @@ next-env.d.ts
 
 # local data storage
 /data
+
+# fonttools venv created by scripts/build-font-subset.sh
+node_modules/.cache/
