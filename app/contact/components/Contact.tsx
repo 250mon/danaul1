@@ -4,10 +4,11 @@ import Map from "@/app/ui/map";
 
 import { CLINIC_INFO } from "@/app/lib/clinic-info";
 import { NAVER_BOOKING_URL } from "@/app/lib/data";
+import { trackEvent } from "@/app/lib/analytics";
 
 export default function Contact() {
   return (
-    <div className="min-h-screen bg-slate-50 pt-24 md:pt-32 pb-20">
+    <div id="main" className="min-h-screen bg-slate-50 pt-24 md:pt-32 pb-20">
       {/* Decorative Background Elements */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
          <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-blue-100 rounded-full blur-[120px] opacity-60 translate-x-1/3 -translate-y-1/3" />
@@ -52,9 +53,9 @@ export default function Contact() {
                     <div>
                       <h3 className="font-bold text-slate-800 mb-1">주소</h3>
                       <p className="text-slate-600 leading-relaxed">
-                        서울특별시 광진구 군자로 70 나동 3층 <br/>
-                        (다나을 신경외과 의원)
-                        <span className="block text-sm text-slate-500 mt-1">우편번호: 05011</span>
+                        {CLINIC_INFO.address.full} <br/>
+                        ({CLINIC_INFO.name})
+                        <span className="block text-sm text-slate-500 mt-1">우편번호: {CLINIC_INFO.address.postalCode}</span>
                       </p>
                     </div>
                  </div>
@@ -69,13 +70,18 @@ export default function Contact() {
                     <div>
                       <h3 className="font-bold text-slate-800 mb-2">연락처 및 예약</h3>
                       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                         <a href={`tel:${CLINIC_INFO.phone}`} className="text-2xl font-bold text-primary hover:text-blue-700 transition-colors">
+                         <a
+                           href={`tel:${CLINIC_INFO.phone}`}
+                           onClick={() => trackEvent("tel_click", { location: "contact" })}
+                           className="text-2xl font-bold text-primary hover:text-blue-700 transition-colors"
+                         >
                            {CLINIC_INFO.phone}
                          </a>
                          <a
                             href={NAVER_BOOKING_URL}
                             target="_blank"
                             rel="noopener noreferrer"
+                            onClick={() => trackEvent("booking_click", { location: "contact" })}
                             className="inline-flex items-center justify-center px-4 py-2 bg-[#03C75A] text-white rounded-lg font-bold text-sm hover:bg-[#02b351] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5"
                           >
                             <span>N</span>
@@ -128,19 +134,23 @@ export default function Contact() {
                   <div className="flex gap-4">
                      <span className="flex-shrink-0 w-16 font-bold text-slate-600">지하철</span>
                      <p className="text-slate-800">
-                       <span className="font-bold text-[#697215]">7호선</span> 어린이대공원역 5번 출구 나와서 좌측 화양사거리 방면으로<span className="text-slate-500">(도보 4분)</span>
+                       <span className="font-bold text-[#697215]">{CLINIC_INFO.transit.subwayLine}</span>{" "}
+                       {CLINIC_INFO.transit.subwayDetail}
                      </p>
                   </div>
                   <div className="flex gap-4">
                      <span className="flex-shrink-0 w-16 font-bold text-slate-600">버스</span>
                      <div className="text-slate-800 text-sm md:text-base space-y-1">
-                       <p><span className="font-medium">장안초등학교 앞:</span> 240, 2012, 2016번</p>
-                       <p><span className="font-medium">광진광장 앞:</span> 240, 302, 2016, 2222, 3217, 3220번</p>
+                       {CLINIC_INFO.transit.buses.map((bus) => (
+                         <p key={bus.stop}>
+                           <span className="font-medium">{bus.stop}:</span> {bus.routes.join(", ")}번
+                         </p>
+                       ))}
                      </div>
                   </div>
                   <div className="flex gap-4">
                      <span className="flex-shrink-0 w-16 font-bold text-slate-600">주차</span>
-                     <p className="text-slate-800">건물 내 지상 1층 넓은 주차장 이용 가능 (진료 시 무료)</p>
+                     <p className="text-slate-800">{CLINIC_INFO.transit.parking}</p>
                   </div>
                </div>
             </div>
@@ -158,17 +168,19 @@ export default function Contact() {
              {/* Map Actions */}
              <div className="p-4 flex gap-3 justify-center">
                  <a 
-                   href="https://map.naver.com/v5/search/%EB%8B%A4%EB%82%98%EC%9D%84%EC%8B%A0%EA%B2%BD%EC%99%B8%EA%B3%BC" 
+                   href={CLINIC_INFO.maps.naver}
                    target="_blank" 
                    rel="noopener noreferrer"
+                   onClick={() => trackEvent("map_click", { provider: "naver" })}
                    className="flex-1 py-3 px-4 bg-[#03C75A] text-white font-bold rounded-xl hover:bg-[#02b351] transition-colors text-center text-sm"
                  >
                    네이버 지도로 보기
                  </a>
                  <a 
-                   href="https://map.kakao.com/link/search/다나을신경외과" 
+                   href={CLINIC_INFO.maps.kakao}
                    target="_blank" 
                    rel="noopener noreferrer"
+                   onClick={() => trackEvent("map_click", { provider: "kakao" })}
                    className="flex-1 py-3 px-4 bg-[#FEE500] text-slate-900 font-bold rounded-xl hover:bg-[#fdd800] transition-colors text-center text-sm"
                  >
                    카카오맵으로 보기

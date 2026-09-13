@@ -1,19 +1,36 @@
-"use client";
-
+import type { Metadata } from "next";
+import Image from "next/image";
+import { SEO } from "@/app/lib/seo";
 import Header from "@/app/ui/Header";
 import Link from "next/link";
 
+export const metadata: Metadata = {
+  title: "비만 클리닉 · 체중 관리 프로그램",
+  description: `${SEO.areaSpecialty} 진료. 인바디 체성분 분석을 바탕으로 개인 맞춤 감량 목표를 세우고, 요요 없는 의학적 체중 관리를 제공합니다. ${SEO.borderNote}`,
+  alternates: { canonical: "/obesity" },
+  openGraph: {
+    title: `비만 클리닉 · 체중 관리 프로그램${SEO.titleSuffix}`,
+    description: `${SEO.areaSpecialty} 진료. 인바디 체성분 분석을 바탕으로 개인 맞춤 감량 목표를 세우고, 요요 없는 의학적 체중 관리를 제공합니다. ${SEO.borderNote}`,
+    url: "/obesity",
+  },
+};
+
 export default function ObesityPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main id="main" className="min-h-screen bg-slate-50">
       <Header />
       
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url("/danaul/jogging_bg.jpg")' }}
-        >
+        <div className="absolute inset-0">
+          <Image
+            src="/danaul/jogging_bg.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="relative z-10 text-center text-white p-6 max-w-4xl mx-auto">
@@ -50,9 +67,12 @@ export default function ObesityPage() {
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
             <div className="w-full lg:w-1/2">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-slate-200">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: 'url("/danaul/obesity/obesity-inbody.png")', backgroundColor: '#e2e8f0' }} 
+                <Image
+                  src="/danaul/obesity/obesity-inbody.webp"
+                  alt="인바디 체성분 분석 검사"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
                 />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-8">
                    <span className="text-white/80 font-bold text-xl tracking-wider">Weight Management</span>
@@ -92,9 +112,12 @@ export default function ObesityPage() {
           <div className="flex flex-col lg:flex-row-reverse items-center gap-12 lg:gap-20">
             <div className="w-full lg:w-1/2">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-slate-200">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: 'url("/danaul/obesity/obesity-wegovy-mounjaro.png")', backgroundColor: '#e2e8f0' }} 
+                <Image
+                  src="/danaul/obesity/obesity-wegovy-mounjaro.webp"
+                  alt="비만 치료 주사제 처방 상담"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
                 />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-8">
                    <span className="text-white/80 font-bold text-xl tracking-wider">Medical Diet Therapy</span>
@@ -149,9 +172,12 @@ export default function ObesityPage() {
           <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
             <div className="w-full lg:w-1/2">
               <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-slate-200">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center"
-                  style={{ backgroundImage: 'url("/danaul/obesity/obesity-daily-food-journal.png")', backgroundColor: '#e2e8f0' }} 
+                <Image
+                  src="/danaul/obesity/obesity-daily-food-journal.webp"
+                  alt="식습관 기록을 통한 생활 습관 교정"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
                 />
                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-8">
                    <span className="text-white/80 font-bold text-xl tracking-wider">Lifestyle Modification</span>

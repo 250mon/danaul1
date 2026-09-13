@@ -1,19 +1,36 @@
-"use client";
-
+import type { Metadata } from "next";
+import Image from "next/image";
+import { SEO } from "@/app/lib/seo";
 import Header from "@/app/ui/Header";
 import Link from "next/link";
 
+export const metadata: Metadata = {
+  title: "관절 클리닉 · 무릎 어깨 통증",
+  description: `${SEO.areaSpecialty} 진료. 무릎 퇴행성 관절염, 오십견·회전근 질환, 발목 염좌, 손목 건초염을 초음파 유도 주사와 체외충격파로 치료합니다. ${SEO.borderNote}`,
+  alternates: { canonical: "/joint" },
+  openGraph: {
+    title: `관절 클리닉 · 무릎 어깨 통증${SEO.titleSuffix}`,
+    description: `${SEO.areaSpecialty} 진료. 무릎 퇴행성 관절염, 오십견·회전근 질환, 발목 염좌, 손목 건초염을 초음파 유도 주사와 체외충격파로 치료합니다. ${SEO.borderNote}`,
+    url: "/joint",
+  },
+};
+
 export default function JointPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main id="main" className="min-h-screen bg-slate-50">
       <Header />
       
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url("/danaul/knee_bg.jpg")' }}
-        >
+        <div className="absolute inset-0">
+          <Image
+            src="/danaul/knee_bg.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="relative z-10 text-center text-white p-6 max-w-4xl mx-auto">
@@ -57,7 +74,7 @@ export default function JointPage() {
             "앉았다 일어날 때 무릎에서 소리가 나거나 통증이 있다.",
             "날씨가 흐리면 무릎이 더 쑤신다."
           ]}
-          image="/danaul/joint/joint-stepping-down-knee-pain.png"
+          image="/danaul/joint/joint-stepping-down-knee-pain.webp"
           align="left"
         />
 
@@ -73,7 +90,7 @@ export default function JointPage() {
             "밤에 어깨 통증이 심해 잠을 설치는 경우가 많다 (야간통).",
             "어깨가 굳어 옷을 입고 벗기가 불편하다."
           ]}
-          image="/danaul/joint/joint-shoulder-impingement.png"
+          image="/danaul/joint/joint-shoulder-impingement.webp"
           align="right"
         />
 
@@ -89,7 +106,7 @@ export default function JointPage() {
             "조금만 울퉁불퉁한 길을 가도 발목이 꺾일 것 같다.",
             "발목을 눌렀을 때 특정 부위에 압통이 심하다."
           ]}
-          image="/danaul/joint/joint-ankle-sprain.png"
+          image="/danaul/joint/joint-ankle-sprain.webp"
           align="left"
         />
 
@@ -105,7 +122,7 @@ export default function JointPage() {
             "손목에 혹(결절종)이 만져지기도 한다.",
             "손가락이 딸깍거리고 펴기 힘들다 (방아쇠수지)."
           ]}
-          image="/danaul/joint/joint-wrist-pain.png"
+          image="/danaul/joint/joint-wrist-pain.webp"
           align="right"
         />
 
@@ -152,9 +169,12 @@ function DiseaseSection({ id, title, subtitle, description, symptoms, image, ali
         {/* Image Area */}
         <div className="w-full lg:w-1/2">
            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-slate-200">
-             <div 
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url('${image}')`, backgroundColor: '#e2e8f0' }} 
+             <Image
+                src={image}
+                alt={title}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
              />
              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-8">
                <span className="text-white/80 font-bold text-xl tracking-wider">{subtitle}</span>

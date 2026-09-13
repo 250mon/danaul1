@@ -1,19 +1,36 @@
-"use client";
-
+import type { Metadata } from "next";
+import Image from "next/image";
+import { SEO } from "@/app/lib/seo";
 import Header from "@/app/ui/Header";
 import Link from "next/link";
 
+export const metadata: Metadata = {
+  title: "외상 클리닉 · 상처 봉합 골절",
+  description: `${SEO.areaSpecialty} 진료. 열상 봉합, 타박상·골절, 내향성 발톱, 창상 감염을 X-ray·초음파로 진단하고 흉터를 최소화해 처치합니다. ${SEO.borderNote}`,
+  alternates: { canonical: "/trauma" },
+  openGraph: {
+    title: `외상 클리닉 · 상처 봉합 골절${SEO.titleSuffix}`,
+    description: `${SEO.areaSpecialty} 진료. 열상 봉합, 타박상·골절, 내향성 발톱, 창상 감염을 X-ray·초음파로 진단하고 흉터를 최소화해 처치합니다. ${SEO.borderNote}`,
+    url: "/trauma",
+  },
+};
+
 export default function TraumaPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main id="main" className="min-h-screen bg-slate-50">
       <Header />
       
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url("/danaul/suture.jpg")' }}
-        >
+        <div className="absolute inset-0">
+          <Image
+            src="/danaul/suture.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="relative z-10 text-center text-white p-6 max-w-4xl mx-auto">
@@ -73,7 +90,7 @@ export default function TraumaPage() {
             "다친 사지를 움직이거나 힘을 주기 어렵다.",
             "모양의 변형이 관찰된다."
           ]}
-          image="/danaul/trauma/trauma-finger-fracture.png"
+          image="/danaul/trauma/trauma-finger-fracture.webp"
           align="right"
         />
 
@@ -89,7 +106,7 @@ export default function TraumaPage() {
             "염증이 심해지면 고름이 나오기도 한다.",
             "발톱 주위에 육아종(살이 튀어나옴)이 생긴다."
           ]}
-          image="/danaul/trauma/trauma-ingrowing-toenail.png"
+          image="/danaul/trauma/trauma-ingrowing-toenail.webp"
           align="left"
         />
 
@@ -105,7 +122,7 @@ export default function TraumaPage() {
             "노란 고름이나 진물이 나온다.",
             "전신 발열이나 오한이 동반되기도 한다."
           ]}
-          image="/danaul/trauma/trauma-infectious-wound.png"
+          image="/danaul/trauma/trauma-infectious-wound.webp"
           align="right"
         />
 
@@ -152,9 +169,12 @@ function DiseaseSection({ id, title, subtitle, description, symptoms, image, ali
         {/* Image Area */}
         <div className="w-full lg:w-1/2">
            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-slate-200">
-             <div 
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url('${image}')`, backgroundColor: '#e2e8f0' }} 
+             <Image
+                src={image}
+                alt={title}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
              />
              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-8">
                <span className="text-white/80 font-bold text-xl tracking-wider">{subtitle}</span>

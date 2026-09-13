@@ -1,4 +1,20 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import { SEO } from "@/app/lib/seo";
 import Header from "@/app/ui/Header";
+import ExerciseClip from "./components/ExerciseClip";
+
+export const metadata: Metadata = {
+  title: "재활 운동 동영상 가이드",
+  description:
+    `${SEO.areaSpecialty} 다나을 의료진이 안내하는 재활 운동 영상. 허리디스크 맥켄지 신전 운동, 척추관협착증 앵그리캣, 무릎 SLR, 어깨 펜듈럼 운동을 따라 하실 수 있습니다.`,
+  alternates: { canonical: "/exercise" },
+  openGraph: {
+    title: `재활 운동 동영상 가이드${SEO.titleSuffix}`,
+    description: `${SEO.areaSpecialty} 재활 운동 영상 가이드`,
+    url: "/exercise",
+  },
+};
 
 const CLIPS = {
   요추: [
@@ -41,19 +57,29 @@ export default function ExercisePage() {
   return (
     <div className="min-h-screen relative flex flex-col items-center py-12 px-4">
       {/* Background with overlay */}
-      <div 
-        className="fixed inset-0 bg-center bg-no-repeat bg-cover"
-        style={{ backgroundImage: "url('/backgrounds/exercise_bg.jpg')" }}
-      />
-      <div className="fixed inset-0 bg-black/60" />
+      <div className="fixed inset-0" aria-hidden="true">
+        <Image
+          src="/backgrounds/exercise_bg.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+        />
+      </div>
+      <div className="fixed inset-0 bg-black/60" aria-hidden="true" />
 
       {/* Content */}
-      <div className="relative z-10 w-full">
+      <div id="main" className="relative z-10 w-full">
         <Header />
 
-        <h1 className="text-3xl font-bold text-white mb-8 drop-shadow-lg text-center">
+        <h1 className="text-3xl font-bold text-white mb-4 drop-shadow-lg text-center">
           다나을 운동 동영상 가이드
         </h1>
+        <p className="text-white/80 text-center max-w-2xl mx-auto mb-8 leading-relaxed">
+          진료 중 안내드리는 재활 운동을 영상으로 정리했습니다. 통증이 심해지면 중단하고
+          내원해 주세요.
+        </p>
         <div className="flex gap-4 justify-center mb-8">
           <a href="#lumbar" className="px-4 py-2 rounded bg-white/20 text-white hover:bg-white/30 transition-all duration-300 hover:scale-105">요추</a>
           <a href="#knee" className="px-4 py-2 rounded bg-white/20 text-white hover:bg-white/30 transition-all duration-300 hover:scale-105">무릎</a>
@@ -84,10 +110,10 @@ export default function ExercisePage() {
                   className="bg-white/10 rounded-xl shadow-lg overflow-hidden flex flex-col items-center"
                 >
                   <div className="w-full aspect-video bg-black">
-                    <video
+                    <ExerciseClip
                       src={clip.src}
-                      controls
-                      className="w-full h-full border-0 rounded-t-xl"
+                      title={clip.title}
+                      section={section}
                     />
                   </div>
                   <div className="p-4 text-white text-center text-base font-semibold">

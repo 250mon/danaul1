@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { CLINIC_INFO } from "../lib/clinic-info";
+import { trackEvent } from "../lib/analytics";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -17,10 +18,25 @@ export default function Footer() {
               {CLINIC_INFO.name}
             </h2>
             <address className="not-italic text-sm leading-relaxed">
-              <p>서울특별시 광진구 군자로 70 나동 3층</p>
-              <p>(다나을 신경외과 의원)</p>
+              <p>{CLINIC_INFO.address.full}</p>
+              <p>(우 {CLINIC_INFO.address.postalCode})</p>
+              <p className="mt-1 text-slate-500">{CLINIC_INFO.transit.subway}</p>
               <p className="mt-2 text-slate-500">
-                <span className="font-medium text-slate-600">대표전화:</span> {CLINIC_INFO.phone}
+                진료 지역: {CLINIC_INFO.areas.districts.join(" · ")}
+                {" "}({[
+                  ...CLINIC_INFO.areas.gwangjin.slice(0, 3),
+                  ...CLINIC_INFO.areas.seongdong.slice(0, 3),
+                ].join(", ")} 등)
+              </p>
+              <p className="mt-2 text-slate-500">
+                <span className="font-medium text-slate-600">대표전화:</span>{" "}
+                <a
+                  href={`tel:${CLINIC_INFO.phone}`}
+                  onClick={() => trackEvent("tel_click", { location: "footer" })}
+                  className="hover:text-blue-600 transition-colors"
+                >
+                  {CLINIC_INFO.phone}
+                </a>
               </p>
             </address>
           </div>
@@ -31,7 +47,7 @@ export default function Footer() {
               <h3 className="font-bold text-slate-800">진료안내</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/danaul" className="hover:text-blue-600 transition-colors">
+                  <Link href="/" className="hover:text-blue-600 transition-colors">
                     병원소개
                   </Link>
                 </li>

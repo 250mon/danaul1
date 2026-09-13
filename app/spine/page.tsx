@@ -1,20 +1,36 @@
-"use client";
-
+import type { Metadata } from "next";
+import Image from "next/image";
+import { SEO } from "@/app/lib/seo";
 import Header from "@/app/ui/Header";
 import Link from "next/link";
-import {  } from "react";
+
+export const metadata: Metadata = {
+  title: "척추 클리닉 · 목디스크 허리디스크",
+  description: `${SEO.areaSpecialty} 진료. 목디스크, 허리디스크, 척추관협착증, 만성 요통을 신경차단술·도수치료·체외충격파 등 비수술 치료 우선으로 진료합니다. ${SEO.borderNote}`,
+  alternates: { canonical: "/spine" },
+  openGraph: {
+    title: `척추 클리닉 · 목디스크 허리디스크${SEO.titleSuffix}`,
+    description: `${SEO.areaSpecialty} 진료. 목디스크, 허리디스크, 척추관협착증, 만성 요통을 신경차단술·도수치료·체외충격파 등 비수술 치료 우선으로 진료합니다. ${SEO.borderNote}`,
+    url: "/spine",
+  },
+};
 
 export default function SpinePage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main id="main" className="min-h-screen bg-slate-50">
       <Header />
       
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url("/danaul/spine_bg.jpg")' }}
-        >
+        <div className="absolute inset-0">
+          <Image
+            src="/danaul/spine_bg.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="relative z-10 text-center text-white p-6 max-w-4xl mx-auto">
@@ -74,7 +90,7 @@ export default function SpinePage() {
             "기침, 재채기를 할 때 통증이 심해진다.",
             "눕거나 편한 자세를 취하면 통증이 사라지기도 한다."
           ]}
-          image="/danaul/spine/spine-dead-lifting.png"
+          image="/danaul/spine/spine-dead-lifting.webp"
           align="right"
         />
 
@@ -90,7 +106,7 @@ export default function SpinePage() {
             "밤에 종아리가 많이 아프다.",
             "허리 디스크와 달리 누워서 다리를 들어올리기는 쉽다."
           ]}
-          image="/danaul/spine/spine-stenosis.png"
+          image="/danaul/spine/spine-stenosis.webp"
           align="left"
         />
 
@@ -150,17 +166,16 @@ function DiseaseSection({ id, title, subtitle, description, symptoms, image, ali
     <section id={id} className="container mx-auto px-4">
       <div className={`flex flex-col lg:flex-row items-center gap-12 lg:gap-20 ${align === 'right' ? 'lg:flex-row-reverse' : ''}`}>
         
-        {/* Image Area (Placeholder style if image missing) */}
+        {/* Image Area */}
         <div className="w-full lg:w-1/2">
            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-slate-200">
-             {/* Note: In a real scenario, we should handle image loading errors or use the Image component properly. 
-                 Using a div with bg-image here for simplicity with the provided paths which might not exist yet. 
-                 Ideally, use Next.js Image component. */}
-             <div 
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url('${image}')`, backgroundColor: '#e2e8f0' }} 
+             <Image
+                src={image}
+                alt={title}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
              />
-             {/* Fallback pattern if image fails to load/is missing logic could be added here or just rely on bg color */}
              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-8">
                <span className="text-white/80 font-bold text-xl tracking-wider">{subtitle}</span>
              </div>

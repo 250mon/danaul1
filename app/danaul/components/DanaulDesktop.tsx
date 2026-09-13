@@ -1,25 +1,13 @@
 "use client";
 
 import { sections } from "@/app/lib/data";
-import Hero from "@/app/ui/Hero";
 import SectionCard from "@/app/ui/SectionCard";
 
 export default function DanaulDesktop() {
-  const heroSection = sections.find((s) => s.isHero);
   const contentSections = sections.filter((s) => !s.isHero);
 
   return (
     <div className="hidden md:block w-full bg-slate-50">
-      {/* Hero Section */}
-      {heroSection && (
-        <Hero
-          backgroundImage={heroSection.bg}
-          title={heroSection.title}
-          subtitle={heroSection.subtitle}
-          description={heroSection.description}
-        />
-      )}
-
       {/* Content Sections */}
       <div className="flex flex-col gap-0">
         {contentSections.map((section, index) => (

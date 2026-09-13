@@ -1,8 +1,10 @@
 'use client';
 
 import Header from "@/app/ui/Header";
-import DanaulMobile from "@/app/danaul/components/DanaulMobile";
-import DanaulDesktop from "@/app/danaul/components/DanaulDesktop";
+import Hero from "@/app/ui/Hero";
+import { sections } from "@/app/lib/data";
+import DanaulMobile from "./DanaulMobile";
+import DanaulDesktop from "./DanaulDesktop";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useModals } from "@/app/ui/useModals";
 import { PopupModalRenderer } from "@/app/ui/PopupModalManager";
@@ -10,7 +12,9 @@ import { useAdmin } from "@/app/ui/AdminContext";
 import AdminPanel from "@/app/ui/AdminPanel";
 import DynamicModalContent from "@/app/ui/DynamicModalContent";
 
-export default function DanaulPage() {
+const heroSection = sections.find((s) => s.isHero);
+
+export default function DanaulHome() {
   const { modals, openModal, closeModal } = useModals();
   const { isAdmin, popupContents, isLoading } = useAdmin();
   const [hasInitialLoad, setHasInitialLoad] = useState(false);
@@ -101,14 +105,14 @@ export default function DanaulPage() {
   ]);
 
   return (
-    <div className="relative w-full min-h-screen bg-slate-50">
+    <div id="main" className="relative w-full min-h-screen bg-slate-50">
       {/* Navigation */}
       <Header />
       
       {/* Render all active modals side by side */}
       <PopupModalRenderer modals={modals} closeModal={closeModal} />
 
-      {/* Test Buttons (remove in production) */}
+      {/* Admin-only popup preview buttons */}
       {isAdmin && (
         <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
           <button
@@ -135,6 +139,16 @@ export default function DanaulPage() {
       {/* Admin Panel */}
       <AdminPanel />
       
+      {/* Hero is shared by both layouts so the page keeps a single <h1> */}
+      {heroSection && (
+        <Hero
+          backgroundImage={heroSection.bg}
+          title={heroSection.title}
+          subtitle={heroSection.subtitle}
+          description={heroSection.description}
+        />
+      )}
+
       {/* Mobile Component - shown only on small screens */}
       <DanaulMobile />
       

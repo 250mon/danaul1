@@ -1,19 +1,36 @@
-"use client";
-
+import type { Metadata } from "next";
+import Image from "next/image";
+import { SEO } from "@/app/lib/seo";
 import Header from "@/app/ui/Header";
 import Link from "next/link";
 
+export const metadata: Metadata = {
+  title: "통증 클리닉 · 두통 신경통",
+  description: `${SEO.areaSpecialty} 진료. 두통·편두통, 만성 목 통증, 대상포진 후 신경통, 신경병증성 통증의 원인을 감별 진단하고 치료합니다. ${SEO.borderNote}`,
+  alternates: { canonical: "/pain" },
+  openGraph: {
+    title: `통증 클리닉 · 두통 신경통${SEO.titleSuffix}`,
+    description: `${SEO.areaSpecialty} 진료. 두통·편두통, 만성 목 통증, 대상포진 후 신경통, 신경병증성 통증의 원인을 감별 진단하고 치료합니다. ${SEO.borderNote}`,
+    url: "/pain",
+  },
+};
+
 export default function PainPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main id="main" className="min-h-screen bg-slate-50">
       <Header />
       
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[500px] flex items-center justify-center overflow-hidden">
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: 'url("/danaul/pain_bg.jpg")' }}
-        >
+        <div className="absolute inset-0">
+          <Image
+            src="/danaul/pain_bg.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
           <div className="absolute inset-0 bg-black/40" />
         </div>
         <div className="relative z-10 text-center text-white p-6 max-w-4xl mx-auto">
@@ -57,7 +74,6 @@ export default function PainPage() {
             "진통제를 먹어도 효과가 없거나 잠시뿐이다.",
             "눈이 빠질 것 같은 통증이 동반된다."
           ]}
-          image="/danaul/pain_headache.jpg"
           align="left"
         />
 
@@ -73,7 +89,6 @@ export default function PainPage() {
             "어깨와 등 날개뼈 안쪽까지 통증이 내려온다.",
             "컴퓨터나 스마트폰을 할 때 통증이 악화된다."
           ]}
-          image="/danaul/pain_neck.jpg"
           align="right"
         />
 
@@ -89,7 +104,6 @@ export default function PainPage() {
             "감각이 남의 살처럼 둔하면서도 통증은 심하다.",
             "통증으로 인해 잠을 이루기 힘들고 우울감이 생긴다."
           ]}
-          image="/danaul/pain_shingles.jpg"
           align="left"
         />
 
@@ -105,7 +119,6 @@ export default function PainPage() {
             "바늘로 찌르는 듯한 예리한 통증이 반복된다.",
             "발살바(기침, 배변 등) 시에는 통증 변화가 뚜렷하지 않다."
           ]}
-          image="/danaul/pain_neuro.jpg"
           align="right"
         />
 
@@ -140,7 +153,8 @@ interface DiseaseSectionProps {
   subtitle: string;
   description: string;
   symptoms: string[];
-  image: string;
+  /** Optional: sections without a photo fall back to a labelled placeholder. */
+  image?: string;
   align: "left" | "right";
 }
 
@@ -152,10 +166,15 @@ function DiseaseSection({ id, title, subtitle, description, symptoms, image, ali
         {/* Image Area */}
         <div className="w-full lg:w-1/2">
            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-slate-200">
-             <div 
-                className="absolute inset-0 bg-cover bg-center"
-                style={{ backgroundImage: `url('${image}')`, backgroundColor: '#e2e8f0' }} 
-             />
+             {image && (
+               <Image
+                  src={image}
+                  alt={title}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
+               />
+             )}
              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-8">
                <span className="text-white/80 font-bold text-xl tracking-wider">{subtitle}</span>
              </div>
