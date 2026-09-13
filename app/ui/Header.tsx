@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { NAVER_BOOKING_URL } from "../lib/data";
+import { trackEvent } from "../lib/analytics";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -18,10 +19,28 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Escape closes the drawer, and the page behind it must not scroll while open.
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setIsMobileMenuOpen(false);
+    };
+    const previousOverflow = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isMobileMenuOpen]);
+
   /* Removed getSectionHref function as it is no longer needed */
 
   const navLinks = [
-    { name: "진료안내", href: "/danaul" },
+    { name: "진료안내", href: "/" },
     { name: "척추클리닉", href: "/spine" },
     { name: "관절클리닉", href: "/joint" },
     { name: "통증클리닉", href: "/pain" },
@@ -40,18 +59,19 @@ export default function Header() {
     >
       <div className="container mx-auto px-4 h-full flex items-center justify-between relative z-50">
         {/* Logo */}
-        <Link href="/danaul" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2" aria-label="다나을신경외과의원 홈">
           <Image
             src="/danaul/danaul_logo_with_text.png"
             alt="다나을 신경외과 로고"
             width={150}
             height={50}
+            priority
             className={`transition-all duration-300 w-auto h-6 md:h-8`}
           />
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-8" aria-label="주요 메뉴">
           {navLinks.map((link) => (
             <Link
               key={link.name}
@@ -64,24 +84,32 @@ export default function Header() {
               <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-accent transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
-          <Link
+          <a
             href={NAVER_BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackEvent("booking_click", { location: "header" })}
             className="px-5 py-2 bg-primary text-white rounded-full text-sm font-semibold hover:bg-blue-700 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
           >
-            예약하기
-          </Link>
+            네이버 예약하기
+          </a>
         </nav>
 
         {/* Mobile Menu Button */}
         <button
+          type="button"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="lg:hidden p-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-menu"
         >
           <svg
             className="w-6 h-6"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             {isMobileMenuOpen ? (
               <path
@@ -108,10 +136,15 @@ export default function Header() {
           isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsMobileMenuOpen(false)}
+        aria-hidden="true"
       />
 
       {/* Mobile Menu Drawer */}
-      <div
+      <nav
+        id="mobile-menu"
+        aria-label="모바일 메뉴"
+        aria-hidden={!isMobileMenuOpen}
+        inert={!isMobileMenuOpen}
         className={`fixed top-0 right-0 bottom-0 w-[280px] bg-white transition-transform duration-300 lg:hidden pt-24 px-6 shadow-2xl ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
@@ -127,15 +160,20 @@ export default function Header() {
               {link.name}
             </Link>
           ))}
-          <Link
+          <a
             href={NAVER_BOOKING_URL}
-            onClick={() => setIsMobileMenuOpen(false)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => {
+              trackEvent("booking_click", { location: "header_drawer" });
+              setIsMobileMenuOpen(false);
+            }}
             className="w-full py-4 bg-primary text-white rounded-xl text-center font-bold text-lg mt-4 shadow-lg active:scale-95 transition-transform"
           >
-            예약하기
-          </Link>
+            네이버 예약하기
+          </a>
         </div>
-      </div>
+      </nav>
     </header>
   );
 }

@@ -12,6 +12,10 @@
   
   --background: var(--surface-white);
   --foreground: var(--text-primary);
+
+  /* Every page paints its own light surfaces, so pin the UA theme to light
+     instead of letting form controls and scrollbars flip to dark. */
+  color-scheme: light;
 }
 
 @theme inline {
@@ -33,25 +37,23 @@
   --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Keep light theme as default for medical site for now, or define dark variables here */
-    /* Often medical sites stay light for cleanliness, but here is a mapping just in case */
-    --background: #0f172a;
-    --foreground: #f1f5f9;
-        
-    --primary-blue: #3b82f6;
-    --secondary-blue: #1e293b;
-    --text-primary: #f8fafc;
-    --text-secondary: #cbd5e1;
-    --surface-white: #1e293b;
-    --surface-offwhite: #0f172a;
-  }
-}
-
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 100px; /* Offset for fixed header */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 body {
