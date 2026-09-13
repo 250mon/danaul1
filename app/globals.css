@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./fonts/pretendard.css";
 
 :root {
   /* Medical Theme Palette */
@@ -18,6 +19,19 @@
   color-scheme: light;
 }
 
+/* Tailwind derives --default-font-family (and so the <html> font) from
+   --font-sans, which is why this has to be a real stack and not a var() that
+   points at nothing: an undefined custom property makes the whole font-family
+   declaration invalid, and every element silently falls back to the browser
+   default. */
+@theme {
+  --font-sans: "Pretendard Variable", "Pretendard", "Pretendard Fallback",
+    system-ui, -apple-system,
+    "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -28,11 +42,7 @@
   --color-text-secondary: var(--text-secondary);
   --color-surface: var(--surface-white);
   --color-surface-alt: var(--surface-offwhite);
-  
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-pretendard: var(--font-pretendard);
-  
+
   --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
   --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.05), 0 4px 6px -4px rgb(0 0 0 / 0.05);
 }
@@ -59,7 +69,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-pretendard), var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
   overflow-x: hidden;
 }
 

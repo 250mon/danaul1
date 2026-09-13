@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { pretendard } from "./ui/fonts";
 import "./globals.css";
 import { AdminProvider } from "./ui/AdminContext";
 import Footer from "./ui/Footer";
@@ -164,7 +163,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${pretendard.variable} antialiased`}>
+      <body className="antialiased">
         {/* Google tag (gtag.js) - loaded on every route via the root layout */}
         {analyticsEnabled && (
           <>
