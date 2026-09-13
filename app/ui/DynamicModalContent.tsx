@@ -1,6 +1,16 @@
 'use client';
 
 import { useAdmin } from './AdminContext';
+import { trackEvent } from '@/app/lib/analytics';
+
+// Popup copy can embed arbitrary links; the booking one is a conversion.
+function trackPopupLink(url: string) {
+  if (url.includes('booking.naver.com')) {
+    trackEvent('booking_click', { location: 'popup' });
+  } else {
+    trackEvent('outbound_click', { link_url: url, location: 'popup' });
+  }
+}
 
 interface DynamicModalContentProps {
   popupId: string;
@@ -28,6 +38,7 @@ export default function DynamicModalContent({ popupId, onClose, onAction }: Dyna
               href={url}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackPopupLink(url)}
               className="text-blue-600 hover:text-blue-800 underline"
             >
               {displayText}
@@ -53,6 +64,7 @@ export default function DynamicModalContent({ popupId, onClose, onAction }: Dyna
                 <a
                   key={partIndex}
                   href={`tel:${part}`}
+                  onClick={() => trackEvent('tel_click', { location: 'popup' })}
                   className="text-blue-600 hover:text-blue-800 underline"
                 >
                   {part}
@@ -66,6 +78,7 @@ export default function DynamicModalContent({ popupId, onClose, onAction }: Dyna
                   href={part}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackPopupLink(part)}
                   className="text-blue-600 hover:text-blue-800 underline break-all"
                 >
                   {part}
