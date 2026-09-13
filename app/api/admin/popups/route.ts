@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from 'redis';
 import { PopupContent, defaultPopupContents } from '@/app/lib/data';
+import { verifyAdminRequest } from '@/app/lib/admin-auth';
 import fs from 'fs/promises';
 import path from 'path';
 
 const POPUP_CONTENTS_KEY = 'popup_contents';
-const STORAGE_FILE = path.join(process.cwd(), 'popups-config.json');
+const STORAGE_FILE = process.env.POPUP_STORAGE_FILE || path.join(process.cwd(), 'popups-config.json');
 
 // Create Redis client
 function createRedisClient() {
@@ -75,27 +76,44 @@ async function writePopupContents(contents: Record<string, PopupContent>) {
   }
 }
 
-// Verify admin token (simple check - in production use proper JWT validation)
-function verifyAdminToken(request: NextRequest): boolean {
-  const authHeader = request.headers.get('authorization');
-  
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return false;
+const MAX_POPUPS = 12;
+const FIELD_LIMITS = { title: 200, content: 4000, buttonText: 60, buttonAction: 40 } as const;
+
+// Anything persisted here is rendered on the public site, so accept only the
+// PopupContent shape and reject oversized payloads.
+function validateContents(value: unknown): Record<string, PopupContent> | null {
+  if (typeof value !== 'object' || value === null || Array.isArray(value)) return null;
+
+  const entries = Object.entries(value as Record<string, unknown>);
+  if (entries.length === 0 || entries.length > MAX_POPUPS) return null;
+
+  const validated: Record<string, PopupContent> = {};
+
+  for (const [key, raw] of entries) {
+    if (!/^[a-z0-9_-]{1,40}$/i.test(key)) return null;
+    if (typeof raw !== 'object' || raw === null || Array.isArray(raw)) return null;
+
+    const popup = raw as Record<string, unknown>;
+    if (popup.id !== key) return null;
+    if (typeof popup.title !== 'string' || popup.title.length > FIELD_LIMITS.title) return null;
+    if (typeof popup.content !== 'string' || popup.content.length > FIELD_LIMITS.content) return null;
+    if (typeof popup.enabled !== 'boolean') return null;
+    if (popup.buttonText !== undefined &&
+        (typeof popup.buttonText !== 'string' || popup.buttonText.length > FIELD_LIMITS.buttonText)) return null;
+    if (popup.buttonAction !== undefined &&
+        (typeof popup.buttonAction !== 'string' || popup.buttonAction.length > FIELD_LIMITS.buttonAction)) return null;
+
+    validated[key] = {
+      id: key,
+      title: popup.title,
+      content: popup.content,
+      enabled: popup.enabled,
+      ...(popup.buttonText !== undefined && { buttonText: popup.buttonText as string }),
+      ...(popup.buttonAction !== undefined && { buttonAction: popup.buttonAction as string }),
+    };
   }
-  
-  const token = authHeader.substring(7);
-  
-  try {
-    // Decode base64 token
-    const decodedToken = Buffer.from(token, 'base64').toString('utf-8');
-    
-    // Simple token validation - in production, use proper JWT verification
-    const isValid = decodedToken.startsWith('admin_');
-    
-    return isValid;
-  } catch {
-    return false;
-  }
+
+  return validated;
 }
 
 // GET: Fetch popup contents
@@ -115,7 +133,7 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     // Verify admin authentication
-    if (!verifyAdminToken(request)) {
+    if (!verifyAdminRequest(request)) {
       return NextResponse.json({ 
         success: false, 
         error: 'Unauthorized - invalid or missing admin token' 
@@ -123,12 +141,12 @@ export async function PUT(request: NextRequest) {
     }
 
     const requestBody = await request.json();
-    const { contents } = requestBody;
+    const contents = validateContents(requestBody?.contents);
     
     if (!contents) {
       return NextResponse.json({ 
         success: false, 
-        error: 'Invalid request body - contents field is required' 
+        error: 'Invalid request body - contents must be a valid popup map' 
       }, { status: 400 });
     }
 
@@ -148,7 +166,7 @@ export async function PUT(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Verify admin authentication
-    if (!verifyAdminToken(request)) {
+    if (!verifyAdminRequest(request)) {
       return NextResponse.json({ 
         success: false, 
         error: 'Unauthorized' 
@@ -167,4 +185,4 @@ export async function POST(request: NextRequest) {
       error: 'Failed to reset popup contents' 
     }, { status: 500 });
   }
-} 
+}
