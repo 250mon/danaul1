@@ -1,0 +1,41 @@
+services:
+  web:
+    build:
+      context: .
+      args:
+        # NEXT_PUBLIC_* is inlined at build time; passing these only under
+        # `environment:` would leave the generated pages with stale values.
+        NEXT_PUBLIC_NAVER_CLIENT_ID: ${NEXT_PUBLIC_NAVER_CLIENT_ID:-}
+        NEXT_PUBLIC_NAVER_MAP_AUTH_PARAM: ${NEXT_PUBLIC_NAVER_MAP_AUTH_PARAM:-ncpKeyId}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:?Set NEXT_PUBLIC_SITE_URL in .env - it is baked into canonical URLs, robots.txt and sitemap.xml}
+        NEXT_PUBLIC_NAVER_SITE_VERIFICATION: ${NEXT_PUBLIC_NAVER_SITE_VERIFICATION:-}
+        NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: ${NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION:-}
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?Set ADMIN_PASSWORD in .env before starting}
+      POPUP_STORAGE_FILE: /app/data/popups-config.json
+      REDIS_URL: ${REDIS_URL:-}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
+    volumes:
+      - popup-data:/app/data
+    restart: unless-stopped
+    init: true
+    networks:
+      edge:
+        aliases:
+          - danaul-web
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+
+networks:
+  edge:
+    name: edge
+    external: true
+
+volumes:
+  popup-data:
