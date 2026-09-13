@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Danaul clinic website
 
-## Getting Started
+Next.js App Router website using React, TypeScript, and Tailwind CSS.
 
-First, run the development server:
+## Run with Docker Compose
+
+Install Docker Engine or Docker Desktop with the Compose v2 plugin, then:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Edit `.env`: set `ADMIN_PASSWORD`, `NEXT_PUBLIC_SITE_URL` (the public origin, e.g. `https://danaul.kdocai.com`) and the clinic's `NEXT_PUBLIC_NAVER_CLIENT_ID` for Naver Maps. An empty map key leaves the map unavailable. Then start the website:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Every `NEXT_PUBLIC_*` value is inlined when `npm run build` runs, and `.env` is excluded from the Docker build context, so each one must be declared as a build arg in both `Dockerfile` and `docker-compose.yml`. Adding a new `NEXT_PUBLIC_*` variable to `.env` alone silently leaves the built pages on the old default — that is how `robots.txt`, `sitemap.xml` and every canonical URL ended up pointing at the wrong domain. Changing any of them requires `docker compose up -d --build`, not a restart.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+docker compose up -d --build
+docker compose ps
+```
 
-## Learn More
+Open http://localhost:3000 (or the `WEB_PORT` set in `.env`). The image uses a multi-stage build with `npm ci`, Next.js standalone output, and a non-root runtime user. Local `.env` files are excluded from the image; Compose passes the admin password at runtime. The public map key is embedded during the build, so changing it requires rebuilding.
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# View logs
+docker compose logs -f web
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Rebuild after code or map-key changes
+docker compose up -d --build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Stop and remove containers, keeping popup data
+docker compose down
+```
 
-## Deploy on Vercel
+## Popup storage
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Compose mounts the named `popup-data` volume at `/app/data`. A new volume starts with the repository's `popups-config.json`; admin edits survive container recreation and image rebuilds. Later changes to the repository file do not replace data in an existing volume. `docker compose down --volumes` deletes this saved data.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+To back up the active file to the host:
+
+```bash
+docker compose cp web:/app/data/popups-config.json ./popups-backup.json
+```
+
+To restore a backup while the container is running (avoid concurrent admin edits):
+
+```bash
+docker compose exec -T web sh -c 'cat > /app/data/popups-config.json' < popups-backup.json
+```
+
+Optional `REDIS_URL` and `REDIS_PASSWORD` settings connect to an existing Redis service; the file volume remains the fallback. `localhost` inside the container refers to the container itself. Redis data takes precedence over the file, and successful Redis writes do not update the file backup; back up Redis separately when using it. Existing Redis data is not automatically migrated to file storage.
+
+Outside Docker, popup storage still defaults to `./popups-config.json`. Set `POPUP_STORAGE_FILE` to override it; its parent directory must exist and be writable.
+
+## Local development
+
+```bash
+npm ci
+npm run dev
+```
+
+Open http://localhost:3000. Run `npm run build` to verify the production build. To lint source directly, use `./node_modules/.bin/eslint app` (the existing `npm run lint` script uses `next lint`).
