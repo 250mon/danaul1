@@ -1,6 +1,7 @@
 "use client";
 
 
+import Image from "next/image";
 import Link from "next/link";
 
 interface SectionCardProps {
@@ -28,10 +29,9 @@ export default function SectionCard({
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-slate-50 opacity-90" />
         {/* We can use the section image as a subtle texture or parallax bg */}
-        <div 
-            className="absolute right-0 top-0 w-1/2 h-full opacity-5 bg-no-repeat bg-cover mix-blend-multiply filter grayscale"
-            style={{ backgroundImage: `url('${backgroundImage}')` }}
-        />
+        <div className="absolute right-0 top-0 w-1/2 h-full opacity-5 mix-blend-multiply filter grayscale" aria-hidden="true">
+          <Image src={backgroundImage} alt="" fill sizes="50vw" className="object-cover" />
+        </div>
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -40,10 +40,15 @@ export default function SectionCard({
           {/* Image/Visual Column */}
           <div className="w-full md:w-1/2">
             <div className="relative rounded-3xl overflow-hidden shadow-2xl transform hover:scale-[1.02] transition-transform duration-500">
-              <div 
-                className="aspect-[4/3] bg-cover bg-center"
-                style={{ backgroundImage: `url('${backgroundImage}')` }}
-              />
+              <div className="relative aspect-[4/3]">
+                <Image
+                  src={backgroundImage}
+                  alt={title}
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent md:hidden" />
               <div className="absolute bottom-0 left-0 p-6 md:p-8 md:hidden">
                 <h3 className="text-white text-2xl font-bold">{title}</h3>
