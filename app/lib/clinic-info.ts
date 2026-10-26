@@ -16,6 +16,8 @@ const SCHEDULE = {
 const GWANGJIN_DONG = ['군자동', '화양동', '중곡동', '능동', '자양동', '구의동', '광장동'] as const;
 const SEONGDONG_DONG = ['성수동', '송정동', '용답동', '마장동', '사근동', '행당동'] as const;
 
+type ServedDong = (typeof GWANGJIN_DONG)[number] | (typeof SEONGDONG_DONG)[number];
+
 export const CLINIC_INFO = {
   name: '다나을신경외과의원',
   phone: '02-465-9898',
@@ -50,6 +52,11 @@ export const CLINIC_INFO = {
     districts: ['광진구', '성동구'],
     gwangjin: GWANGJIN_DONG,
     seongdong: SEONGDONG_DONG,
+    /**
+     * The neighbourhoods closest to the clinic, for metadata with no room for
+     * the full district lists. Typed so an entry has to be a served 동.
+     */
+    nearest: ['군자동', '화양동', '능동', '송정동', '성수동'] as readonly ServedDong[],
   },
   transit: {
     subway: '7호선 어린이대공원역 5번 출구 도보 4분',

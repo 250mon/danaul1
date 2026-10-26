@@ -78,6 +78,8 @@ const nextConfig: NextConfig = {
     return [
       // The home page now lives at "/"; keep the old path working.
       { source: "/danaul", destination: "/", permanent: true },
+      // The trauma clinic was renamed to 외과 (surgery); keep the indexed path working.
+      { source: "/trauma", destination: "/surgery", permanent: true },
     ];
   },
 };

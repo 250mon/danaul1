@@ -44,7 +44,7 @@ export default function Header() {
     { name: "척추클리닉", href: "/spine" },
     { name: "관절클리닉", href: "/joint" },
     { name: "통증클리닉", href: "/pain" },
-    { name: "외상클리닉", href: "/trauma" },
+    { name: "외과클리닉", href: "/surgery" },
     { name: "비만클리닉", href: "/obesity" },
     { name: "진료시간/오시는길", href: "/contact" },
   ];

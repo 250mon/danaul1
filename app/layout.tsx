@@ -9,19 +9,13 @@ import { SITE_URL } from "./lib/site";
 import { SEO } from "./lib/seo";
 import { GA_MEASUREMENT_ID, analyticsEnabled } from "./lib/analytics";
 
-const description =
-  `${CLINIC_INFO.address.full}, ${CLINIC_INFO.areas.districts.join('와 ')} 경계에 있습니다. ` +
-  `${CLINIC_INFO.specialty.label} 진료로 척추·관절·통증·외상·비만을 봅니다. ` +
-  `${SEO.nearbyNote} 비수술 치료를 우선하며, ${SEO.eveningNote}. ` +
-  `예약 문의 ${CLINIC_INFO.phone}`;
-
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default: SEO.siteTitle,
     template: `%s${SEO.titleSuffix}`,
   },
-  description,
+  description: SEO.shortDescription,
   keywords: [
     ...SEO.areaKeywords,
     "광진구 허리디스크",
@@ -40,7 +34,7 @@ export const metadata: Metadata = {
     url: SITE_URL,
     siteName: CLINIC_INFO.name,
     title: SEO.siteTitle,
-    description,
+    description: SEO.socialDescription,
     images: [
       {
         url: "/og/danaul-og.jpg",
@@ -53,7 +47,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: SEO.siteTitle,
-    description,
+    description: SEO.socialDescription,
     images: ["/og/danaul-og.jpg"],
   },
   robots: {
@@ -145,8 +139,8 @@ const clinicJsonLd = {
     },
     {
       "@type": "MedicalProcedure",
-      name: "외상 클리닉",
-      url: `${SITE_URL}/trauma`,
+      name: "외과 클리닉",
+      url: `${SITE_URL}/surgery`,
     },
     {
       "@type": "MedicalProcedure",

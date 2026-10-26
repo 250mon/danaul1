@@ -45,7 +45,7 @@ export const sections = [
     bg: "/danaul/hero_bg.jpg",
     subtitle: SEO.areaSpecialty,
     title: "다나을 신경외과 의원",
-    description: "척추 · 관절 · 통증 · 외상 · 비만",
+    description: "척추 · 관절 · 통증 · 외과 · 비만",
     isHero: true,
   },
   {
@@ -80,12 +80,13 @@ export const sections = [
   {
     bg: "/danaul/suture.jpg",
     subtitle: "넘어짐·부딪힘·교통사고, 외상의 모든 순간",
-    title: "외상 / 감염 상처 클리닉",
+    title: "외과 / 감염 상처 클리닉",
     description: `낙상, 충돌, 스포츠 손상, 교통사고 등 다양한 외상에 대해 정확히 진단하고, 빠르게 처치합니다.
 골절, 내부 출혈, 조직 파열 등을 초음파·X-ray 등 영상장비를 활용해 실시간 진단합니다.
-외상 이나 상처 감염 후 상처의 빠르고 흉터 없는 회복을 돕는 수술적 처지 및 상처 관리를 제공합니다.`,
-    id: "trauma",
-    link: "/trauma",
+외상 이나 상처 감염 후 상처의 빠르고 흉터 없는 회복을 돕는 수술적 처지 및 상처 관리를 제공합니다.
+내향성 발톱, 피지낭(표피낭종) 등 간단한 외과 처치도 함께 진료합니다.`,
+    id: "surgery",
+    link: "/surgery",
   },
   {
     bg: "/danaul/jogging_bg.jpg",
@@ -103,7 +104,7 @@ export const navigationButtons = [
   { name: "척추", icon: "/danaul/spine icon.svg", targetId: "/spine" },
   { name: "관절", icon: "/danaul/joint icon.svg", targetId: "/joint" },
   { name: "통증", icon: "/danaul/metabolism icon.svg", targetId: "/pain" },
-  { name: "외상", icon: "/danaul/injury icon.svg", targetId: "/trauma" },
+  { name: "외과", icon: "/danaul/injury icon.svg", targetId: "/surgery" },
   {
     name: "비만",
     icon: "/danaul/monitor weight icon.svg",

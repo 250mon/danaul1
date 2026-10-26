@@ -6,7 +6,7 @@ const routes: { path: string; priority: number; changeFrequency: MetadataRoute.S
   { path: "/spine", priority: 0.9, changeFrequency: "monthly" },
   { path: "/joint", priority: 0.9, changeFrequency: "monthly" },
   { path: "/pain", priority: 0.9, changeFrequency: "monthly" },
-  { path: "/trauma", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/surgery", priority: 0.8, changeFrequency: "monthly" },
   { path: "/obesity", priority: 0.8, changeFrequency: "monthly" },
   { path: "/contact", priority: 0.9, changeFrequency: "monthly" },
   { path: "/exercise", priority: 0.7, changeFrequency: "monthly" },

@@ -82,8 +82,8 @@ export default function Footer() {
               <h3 className="font-bold text-slate-800">클리닉</h3>
               <ul className="space-y-2">
                  <li>
-                  <Link href="/trauma" className="hover:text-blue-600 transition-colors">
-                    외상클리닉
+                  <Link href="/surgery" className="hover:text-blue-600 transition-colors">
+                    외과클리닉
                   </Link>
                 </li>
                 <li>

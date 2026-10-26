@@ -30,7 +30,20 @@ export default function SectionCard({
         <div className="absolute inset-0 bg-slate-50 opacity-90" />
         {/* We can use the section image as a subtle texture or parallax bg */}
         <div className="absolute right-0 top-0 w-1/2 h-full opacity-5 mix-blend-multiply filter grayscale" aria-hidden="true">
-          <Image src={backgroundImage} alt="" fill sizes="50vw" className="object-cover" />
+          {/*
+            Decorative only. At 5% opacity under a grayscale filter the smallest
+            variant is indistinguishable from the full-width one, so pin it small
+            instead of decoding the same photo the column beside it already shows.
+            alt="" is deliberate - the photo is announced once, by that column.
+          */}
+          <Image
+            src={backgroundImage}
+            alt=""
+            fill
+            sizes="384px"
+            quality={30}
+            className="object-cover"
+          />
         </div>
       </div>
 

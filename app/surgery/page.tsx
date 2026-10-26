@@ -5,17 +5,17 @@ import Header from "@/app/ui/Header";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "외상 클리닉 · 상처 봉합 골절",
-  description: `${SEO.areaSpecialty} 진료. 열상 봉합, 타박상·골절, 내향성 발톱, 창상 감염을 X-ray·초음파로 진단하고 흉터를 최소화해 처치합니다. ${SEO.borderNote}`,
-  alternates: { canonical: "/trauma" },
+  title: "외과 클리닉 · 상처 봉합 골절",
+  description: `${SEO.areaSpecialty} 진료. 열상 봉합, 타박상·골절, 내향성 발톱, 피지낭(표피낭종) 제거, 창상 감염을 X-ray·초음파로 진단하고 흉터를 최소화해 처치합니다. ${SEO.borderNote}`,
+  alternates: { canonical: "/surgery" },
   openGraph: {
-    title: `외상 클리닉 · 상처 봉합 골절${SEO.titleSuffix}`,
-    description: `${SEO.areaSpecialty} 진료. 열상 봉합, 타박상·골절, 내향성 발톱, 창상 감염을 X-ray·초음파로 진단하고 흉터를 최소화해 처치합니다. ${SEO.borderNote}`,
-    url: "/trauma",
+    title: `외과 클리닉 · 상처 봉합 골절${SEO.titleSuffix}`,
+    description: `${SEO.areaSpecialty} 진료. 열상 봉합, 타박상·골절, 내향성 발톱, 피지낭(표피낭종) 제거, 창상 감염을 X-ray·초음파로 진단하고 흉터를 최소화해 처치합니다. ${SEO.borderNote}`,
+    url: "/surgery",
   },
 };
 
-export default function TraumaPage() {
+export default function SurgeryPage() {
   return (
     <main id="main" className="min-h-screen bg-slate-50">
       <Header />
@@ -35,10 +35,10 @@ export default function TraumaPage() {
         </div>
         <div className="relative z-10 text-center text-white p-6 max-w-4xl mx-auto">
           <span className="inline-block py-1 px-4 rounded-full bg-white/20 backdrop-blur-sm text-sm font-bold tracking-widest mb-6 border border-white/30 uppercase">
-            Danaul Trauma Clinic
+            Danaul Surgery Clinic
           </span>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-            외상 클리닉
+            외과 클리닉
           </h1>
           <p className="text-xl md:text-2xl font-light text-slate-100 max-w-2xl mx-auto leading-relaxed">
             갑작스러운 사고,<br className="md:hidden"/> 빠르고 정확한 처치가 흉터를 줄입니다.
@@ -50,7 +50,7 @@ export default function TraumaPage() {
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-slate-800 mb-8">
-            365일 안심할 수 있는 <span className="text-primary">외상 주치의</span>
+            365일 안심할 수 있는 <span className="text-primary">외과 주치의</span>
           </h2>
           <p className="text-slate-600 text-lg max-w-3xl mx-auto leading-loose">
             찰과상부터 골절까지, 초기 처치가 예후를 결정합니다.<br className="hidden md:block"/>
@@ -110,6 +110,21 @@ export default function TraumaPage() {
           align="left"
         />
 
+        {/* Sebaceous Cyst */}
+        <DiseaseSection
+          id="cyst"
+          title="피지낭 (표피낭종)"
+          subtitle="Sebaceous Cyst"
+          description={`피부 아래에 주머니(낭)가 생겨 각질과 피지가 쌓이는 혹입니다. 크기가 작고 증상이 없으면 경과를 볼 수 있지만, 커지거나 염증이 생기면 치료가 필요합니다. 낭의 벽이 남으면 재발하므로 완전히 제거하는 것이 중요합니다.`}
+          symptoms={[
+            "피부 밑에 동그랗고 말랑한 혹이 만져진다.",
+            "혹 가운데 검은 점 같은 구멍이 보인다.",
+            "짜면 하얗고 냄새나는 내용물이 나온다.",
+            "붉게 붓고 아프면 염증이 생긴 상태다."
+          ]}
+          align="right"
+        />
+
         {/* Wound Infection */}
         <DiseaseSection
           id="infection"
@@ -123,7 +138,7 @@ export default function TraumaPage() {
             "전신 발열이나 오한이 동반되기도 한다."
           ]}
           image="/danaul/trauma/trauma-infectious-wound.webp"
-          align="right"
+          align="left"
         />
 
       </div>
@@ -157,7 +172,8 @@ interface DiseaseSectionProps {
   subtitle: string;
   description: string;
   symptoms: string[];
-  image: string;
+  /** Omitted while a clinical photo for the condition is still missing. */
+  image?: string;
   align: "left" | "right";
 }
 
@@ -169,13 +185,17 @@ function DiseaseSection({ id, title, subtitle, description, symptoms, image, ali
         {/* Image Area */}
         <div className="w-full lg:w-1/2">
            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] bg-slate-200">
-             <Image
-                src={image}
-                alt={title}
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
-             />
+             {image ? (
+               <Image
+                  src={image}
+                  alt={title}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
+               />
+             ) : (
+               <div className="absolute inset-0 bg-gradient-to-br from-slate-300 to-slate-400" />
+             )}
              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-8">
                <span className="text-white/80 font-bold text-xl tracking-wider">{subtitle}</span>
              </div>
